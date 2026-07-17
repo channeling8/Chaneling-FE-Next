@@ -1,111 +1,134 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 /* --- Pretendard 로컬 폰트 --- */
 @font-face {
-  font-family: 'Pretendard';
-  src: url('/fonts/Pretendard-Regular.woff2') format('woff2');
-  font-weight: 400;
-  font-display: swap;
+    font-family: 'Pretendard';
+    src: url('/fonts/Pretendard-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-display: swap;
 }
 
 @font-face {
-  font-family: 'Pretendard';
-  src: url('/fonts/Pretendard-Medium.woff2') format('woff2');
-  font-weight: 500;
-  font-display: swap;
+    font-family: 'Pretendard';
+    src: url('/fonts/Pretendard-Medium.woff2') format('woff2');
+    font-weight: 500;
+    font-display: swap;
 }
 
 @font-face {
-  font-family: 'Pretendard';
-  src: url('/fonts/Pretendard-Bold.woff2') format('woff2');
-  font-weight: 600 700;
-  font-display: swap;
+    font-family: 'Pretendard';
+    src: url('/fonts/Pretendard-Bold.woff2') format('woff2');
+    font-weight: 600 700;
+    font-display: swap;
 }
 
 @theme {
-  /* 폰트 패밀리 */
-  --font-pretendard: 'Pretendard', sans-serif;
+    /* 폰트 패밀리 */
+    --font-pretendard: 'Pretendard', sans-serif;
 
-  /* 브레이크포인트 */
-  --breakpoint-desktop: 1440px;
-  --breakpoint-tablet: 768px;
-  --breakpoint-mobile: 360px;
+    /* 브레이크포인트 */
+    --breakpoint-mobile: 360px;
+    --breakpoint-tablet: 768px;
+    --breakpoint-desktop: 1440px;
 
-  /* 기본 컬러 칩 */
-  --color-primary-5: #170305;
-  --color-primary-10: #2D060A;
-  --color-primary-30: #88111D;
-  --color-primary-40: #B61627;
-  --color-primary-50: #DA1B2E;
-  --color-primary-60: #E9495A;
-  --color-primary-70: #EE7783;
-  --color-primary-80: #F4A4AC;
-  --color-primary-90: #F9D2D6;
-  --color-primary-95: #FCE8EA;
+    /* 기본 컬러 칩 */
+    --color-black: #020202;
+    --color-primary-5: #170305;
+    --color-primary-10: #2d060a;
+    --color-primary-20: #5b0b13;
+    --color-primary-30: #88111d;
+    --color-primary-40: #b61627;
+    --color-primary-50: #da1b2e;
+    --color-primary-60: #e9495a;
+    --color-primary-70: #ee7783;
+    --color-primary-80: #f4a4ac;
+    --color-primary-90: #f9d2d6;
+    --color-primary-95: #fce8ea;
 
-  --color-gray-0: #141415;
-  --color-gray-5: #19191B;
-  --color-gray-10: #1E1E20;
-  --color-gray-20: #252527;
-  --color-gray-30: #37363A;
-  --color-gray-40: #6E6D73;
-  --color-gray-50: #898990;
-  --color-gray-60: #94939A;
-  --color-gray-70: #B1B0B5;
-  --color-gray-80: #CBCACE;
-  --color-gray-90: #E5E5E6;
-  --color-gray-95: #F2F2F3;
+    --color-gray-5: #141415;
+    --color-gray-10: #1e1e20;
+    --color-gray-20: #252527;
+    --color-gray-30: #37363a;
+    --color-gray-40: #6e6d73;
+    --color-gray-50: #898990;
+    --color-gray-60: #94939a;
+    --color-gray-70: #b1b0b5;
+    --color-gray-80: #cbcace;
+    --color-gray-90: #e5e5e6;
+    --color-gray-95: #f2f2f3;
+    --color-white: #fcfcfd;
+    --color-black: #020202;
 
-  --color-red-error: #FF4D4F;
+    --color-red-error: #f50019;
+    --color-red-error-op8: #f5001914;
+    --color-blue: #60a5fa;
+    --color-blue-op8: #60a5fa14;
+    --color-green: #4ade80;
+    --color-green-op8: #4ade8014;
+    --color-amber: #ffd93d;
+    --color-amber-op8: #ffd93d14;
 
-  /* --- Semantic Tokens --- */
-  /* Background */
-  --color-bg-0: var(--color-gray-5);
-  --color-bg-1: var(--color-gray-10);
-  --color-bg-2: var(--color-gray-20);
-  --color-bg-3: var(--color-gray-30);
+    /* 기존 class 호환 alias */
+    --color-gray-0: var(--color-gray-5);
 
-  /* Border */
-  --color-border-default: var(--color-gray-20);
-  --color-border-subtitle: var(--color-gray-10);
-  --color-border-strong: var(--color-primary-60);
-  --color-border-active: var(--color-gray-95);
-  --color-border-error: var(--color-red-error);
+    /* --- Semantic Tokens --- */
+    /* Background */
+    --color-bg-0: var(--color-gray-5);
+    --color-bg-1: var(--color-gray-10);
+    --color-bg-2: var(--color-gray-20);
+    --color-bg-3: var(--color-gray-30);
+    --color-bg-divider: var(--color-black);
 
-  /* Text */
-  --color-text-primary: var(--color-gray-95);
-  --color-text-secondary: var(--color-gray-50);
-  --color-text-tertiary: var(--color-gray-40);
-  --color-text-disabled: var(--color-gray-40);
-  --color-text-brand: var(--color-primary-60);
-  --color-text-inverse: var(--color-gray-5);
+    /* Border */
+    --color-border-default: var(--color-gray-20);
+    --color-border-subtitle: var(--color-gray-10);
+    --color-border-strong: var(--color-primary-60);
+    --color-border-active: var(--color-gray-95);
+    --color-border-error: var(--color-red-error);
 
-  /* Icon */
-  --color-icon-primary: var(--color-gray-80);
-  --color-icon-secondary: var(--color-gray-40);
-  --color-icon-tertiary: var(--color-gray-30);
-  --color-icon-disabled: var(--color-gray-30);
-  --color-icon-brand: var(--color-primary-60);
-  --color-icon-inverse: var(--color-gray-20);
+    /* Text */
+    --color-text-primary: var(--color-gray-95);
+    --color-text-secondary: var(--color-gray-50);
+    --color-text-tertiary: var(--color-gray-40);
+    --color-text-disabled: var(--color-gray-40);
+    --color-text-brand: var(--color-primary-60);
+    --color-text-inverse: var(--color-gray-5);
+
+    /* Icon */
+    --color-icon-primary: var(--color-gray-80);
+    --color-icon-secondary: var(--color-gray-40);
+    --color-icon-tertiary: var(--color-gray-30);
+    --color-icon-disabled: var(--color-gray-30);
+    --color-icon-brand: var(--color-primary-60);
+    --color-icon-inverse: var(--color-gray-20);
 }
 
+@layer utilities {
+    .bg-video-card {
+        /* 그래디언트와 CSS 변수(--video-thumb)를 한 번에 묶어줍니다 */
+        background:
+            linear-gradient(180deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0) 50%),
+            linear-gradient(180deg, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0.5) 100%),
+            var(--video-thumb, transparent) 50% / cover no-repeat;
+    }
+}
 /* --- 전역 기본 스타일 --- */
 @layer base {
-  * {
-    @apply box-border;
-  }
+    * {
+        @apply box-border;
+    }
 
-  html,
-  body {
-    @apply h-full m-0 p-0;
-  }
+    html,
+    body {
+        @apply h-full m-0 p-0;
+    }
 
-  body {
-    @apply bg-bg-0 text-text-primary font-pretendard font-normal min-w-[360px] overflow-x-hidden;
-    font-size: 16px;
-    line-height: 1.5;
-    letter-spacing: -0.025em;
-  }
+    body {
+        @apply bg-bg-0 text-text-primary font-pretendard font-normal min-w-[360px] overflow-x-hidden;
+        font-size: 16px;
+        line-height: 1.5;
+        letter-spacing: -0.025em;
+    }
 }
 
 /* --- 타이포그래피 유틸 클래스 ---
@@ -114,90 +137,140 @@
  *   · 자간은 -2.5% (-0.025em) 전체 통일
  *   · 사용법: className="font-title-32r"
  ----------------------------------------------------------------- */
-@layer components {
 
-  /* Title */
-  /* 360: 40px R → 1440: 32px R */
-  .font-title-40r {
+/* Title */
+/* 1440: 32px SB fixed */
+@utility font-title-32sb {
+    @apply text-[32px] leading-[1.4] font-semibold;
+    letter-spacing: -0.025em;
+}
+
+/* 360: 40px R → 1440: 48px R */
+@utility font-title-40r {
     @apply text-[40px] leading-[1.4] font-normal;
     letter-spacing: -0.025em;
-    @apply desktop:text-[32px];
-  }
+    @apply desktop:text-[48px];
+}
 
-  /* 360: 30px R → 1440: 24px SB */
-  .font-title-30r {
+/* 360: 30px R → 1440: 32px R */
+@utility font-title-30r {
     @apply text-[30px] leading-[1.4] font-normal;
     letter-spacing: -0.025em;
-    @apply desktop:text-[24px] desktop:font-semibold;
-  }
+    @apply desktop:text-[32px];
+}
 
-  /* 360: 20px SB → 1440: 20px SB (동일) */
-  .font-title-20sb {
+/* 360: 20px SB → 1440: 22px SB */
+@utility font-title-20sb {
     @apply text-[20px] leading-[1.4] font-semibold;
     letter-spacing: -0.025em;
-  }
+    @apply desktop:text-[22px];
+}
 
-  /* 360: 18px SB → 1440: 18px SB (동일) */
-  .font-title-18sb {
+/* 360: 18px SB → 1440: 20px SB */
+@utility font-title-18sb {
     @apply text-[18px] leading-[1.4] font-semibold;
     letter-spacing: -0.025em;
-  }
+    @apply desktop:text-[20px];
+}
 
-  /* Body */
-  /* 360/1440 모두 16px SB */
-  .font-body-16sb {
+/* Body */
+/* 360: 16px SB → 1440: 18px SB */
+@utility font-body-16sb {
     @apply text-[16px] leading-[1.5] font-semibold;
     letter-spacing: -0.025em;
-  }
+    @apply desktop:text-[18px];
+}
 
-  /* 360/1440 모두 16px M */
-  .font-body-16m {
+/* 360: 16px M → 1440: 18px M */
+@utility font-body-16m {
     @apply text-[16px] leading-[1.5] font-medium;
     letter-spacing: -0.025em;
-  }
+    @apply desktop:text-[18px];
+}
 
-  /* 360/1440 모두 16px R */
-  .font-body-16r {
+/* 360: 16px R → 1440: 18px R */
+@utility font-body-16r {
     @apply text-[16px] leading-[1.5] font-normal;
     letter-spacing: -0.025em;
-  }
+    @apply desktop:text-[18px];
+}
 
-  /* 360: 14px SB (1440 미정의, 동일 유지) */
-  .font-body-14sb {
+/* 360: 14px SB → 1440: 16px SB */
+@utility font-body-14sb {
     @apply text-[14px] leading-[1.5] font-semibold;
     letter-spacing: -0.025em;
-  }
+    @apply desktop:text-[16px];
+}
 
-  /* 360: 14px M (1440 미정의, 동일 유지) */
-  .font-body-14m {
+/* 360: 14px M → 1440: 16px M */
+@utility font-body-14m {
     @apply text-[14px] leading-[1.5] font-medium;
     letter-spacing: -0.025em;
-  }
+    @apply desktop:text-[16px];
+}
 
-  /* 360: 14px R (1440 미정의, 동일 유지) */
-  .font-body-14r {
+/* 360: 14px R → 1440: 16px R */
+@utility font-body-14r {
     @apply text-[14px] leading-[1.5] font-normal;
     letter-spacing: -0.025em;
-  }
+    @apply desktop:text-[16px];
+}
 
-  /* Caption */
-  /* 360: 12px SB → 1440: (미정의, 동일 유지) */
-  .font-caption-12sb {
+/* Caption */
+
+@utility font-caption-14r {
+    @apply text-[14px] leading-[1.5] font-normal;
+    letter-spacing: -0.025em;
+}
+@utility font-caption-14m {
+    @apply text-[14px] leading-[1.5] font-medium;
+    letter-spacing: -0.025em;
+}
+/* 360: 12px SB → 1440: 14px SB */
+@utility font-caption-12sb {
     @apply text-[12px] leading-[1.5] font-semibold;
     letter-spacing: -0.025em;
-  }
+    @apply desktop:text-[14px];
+}
 
-  /* 360: 12px M → 1440: 14px M */
-  .font-caption-12m {
+/* 360: 12px M → 1440: 14px M */
+@utility font-caption-12m {
     @apply text-[12px] leading-[1.5] font-medium;
     letter-spacing: -0.025em;
     @apply desktop:text-[14px];
-  }
+}
 
-  /* 360: 12px R → 1440: 14px R */
-  .font-caption-12r {
+/* 360: 12px R → 1440: 14px R */
+@utility font-caption-12r {
     @apply text-[12px] leading-[1.5] font-normal;
     letter-spacing: -0.025em;
     @apply desktop:text-[14px];
-  }
+}
+
+@layer utilities {
+    /* 커스텀 컴포넌트 스크롤바 */
+    .custom-scrollbar::-webkit-scrollbar {
+        width: 4px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+        background-color: var(--color-border-active);
+        border-radius: 4px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+        background-color: transparent;
+    }
+
+    /* Skeleton 애니메이션 */
+    @keyframes shimmer {
+        0% {
+            background-position: 200% 0;
+        }
+        100% {
+            background-position: -200% 0;
+        }
+    }
+    .animate-custom-wave {
+        background-size: 200% 100%;
+        animation: shimmer 2s infinite linear;
+    }
 }

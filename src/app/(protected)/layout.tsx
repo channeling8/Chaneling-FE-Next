@@ -3,23 +3,37 @@
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 import { useAuthStore } from '@/stores/authStore'
+import { useLayoutStore } from '@/stores/layoutStore'
+import Sidebar from '@/components/layout/Sidebar'
 
-/**
- * Protected Layout
- * 로그인이 필요한 모든 페이지에 적용됩니다.
- * 미로그인 시 랜딩 페이지(/)로 리다이렉트합니다.
- */
 export default function ProtectedLayout({ children }: { children: React.ReactNode }) {
     const router = useRouter()
-    const isLoggedIn = useAuthStore((state) => state.isLoggedIn)
+    const hasHydrated = useAuthStore((state) => state.hasHydrated)
+    const isAuth = useAuthStore((state) => state.isAuth)
+
+    const { isMobileSidebarOpen, closeSidebar } = useLayoutStore()
 
     useEffect(() => {
-        if (!isLoggedIn) {
+        if (hasHydrated && !isAuth) {
             router.replace('/')
         }
-    }, [isLoggedIn, router])
+    }, [hasHydrated, isAuth, router])
 
-    if (!isLoggedIn) return null
+    if (!hasHydrated || !isAuth) {
+        return (
+            <div className="flex h-screen w-full items-center justify-center bg-bg-0">
+                <p className="font-body-16m text-text-secondary">
+                    {!hasHydrated ? '로그인 상태를 확인하고 있습니다...' : '로그인이 필요합니다.'}
+                </p>
+            </div>
+        )
+    }
 
-    return <>{children}</>
+    return (
+        <div className="flex h-screen w-full bg-bg-0">
+            <Sidebar isOpen={isMobileSidebarOpen} onClose={closeSidebar} />
+
+            <div className="relative flex-1 flex flex-col min-w-0 ">{children}</div>
+        </div>
+    )
 }

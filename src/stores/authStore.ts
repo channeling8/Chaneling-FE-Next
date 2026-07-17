@@ -4,26 +4,33 @@ import type { User } from '@/types'
 
 interface AuthState {
     user: User | null
-    isLoggedIn: boolean
+    isAuth: boolean
+    hasHydrated: boolean
     setUser: (user: User) => void
     clearUser: () => void
-    completeOnboarding: () => void
+    setHasHydrated: (hasHydrated: boolean) => void
 }
 
 export const useAuthStore = create<AuthState>()(
     persist(
         (set) => ({
             user: null,
-            isLoggedIn: false,
-            setUser: (user) => set({ user, isLoggedIn: true }),
-            clearUser: () => set({ user: null, isLoggedIn: false }),
-            completeOnboarding: () =>
-                set((state) => ({
-                    user: state.user ? { ...state.user, isOnboardingCompleted: true } : null,
-                })),
+            isAuth: false,
+            hasHydrated: false,
+            setUser: (user) => set({ user, isAuth: true }),
+            clearUser: () => set({ user: null, isAuth: false }),
+            setHasHydrated: (hasHydrated) => set({ hasHydrated }),
         }),
         {
             name: 'auth-storage',
+            partialize: (state) => ({
+                user: state.user,
+                isAuth: state.isAuth,
+            }),
+            skipHydration: true,
+            onRehydrateStorage: () => (state) => {
+                state?.setHasHydrated(true)
+            },
         }
     )
 )

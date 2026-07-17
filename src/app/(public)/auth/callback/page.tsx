@@ -1,8 +1,10 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { useEffect, useRef } from 'react'
-import { LOCAL_STORAGE_KEY } from '@/constants/key'
+import { useEffect, useRef, useState } from 'react'
+import { clearAuthSession } from '@/api/auth'
+import { getMember } from '@/api/member'
+import { authStorage } from '@/lib/auth-storage'
 import { useAuthStore } from '@/stores/authStore'
 
 /**
@@ -16,36 +18,62 @@ export default function AuthCallbackPage() {
     const router = useRouter()
     const setUser = useAuthStore((state) => state.setUser)
     const hasRun = useRef(false)
+    const [errorMessage, setErrorMessage] = useState('')
 
     useEffect(() => {
         // React StrictMode 이중 실행 방지
         if (hasRun.current) return
         hasRun.current = true
 
-        const urlParams = new URLSearchParams(window.location.search)
-        const message = urlParams.get('message')
-        const accessToken = urlParams.get('token')
-        const channelId = urlParams.get('channelId')
-        const isNew = urlParams.get('isNew') === 'true'
+        const handleCallback = async () => {
+            const urlParams = new URLSearchParams(window.location.search)
+            const message = urlParams.get('message')
+            const accessToken = urlParams.get('token')
+            const channelId = urlParams.get('channelId')
+            const isNew = urlParams.get('isNew') === 'true'
+            const parsedChannelId = Number(channelId)
 
-        if (message === 'Success' && accessToken && channelId) {
-            // localStorage에 토큰 및 채널 정보 저장
-            localStorage.setItem(LOCAL_STORAGE_KEY.accessToken, JSON.stringify(accessToken))
-            localStorage.setItem(LOCAL_STORAGE_KEY.channelId, JSON.stringify(channelId))
-            localStorage.setItem(LOCAL_STORAGE_KEY.isNew, JSON.stringify(isNew))
+            if (
+                message !== 'Success'
+                || !accessToken
+                || !channelId
+                || !Number.isFinite(parsedChannelId)
+                || parsedChannelId <= 0
+            ) {
+                clearAuthSession()
+                setErrorMessage('로그인에 실패했습니다. 다시 시도해주세요.')
+                return
+            }
 
-            // TODO: 필요 시 setUser(userInfo) 호출 (백엔드에서 유저 정보도 함께 주는 경우)
+            authStorage.setAccessToken(accessToken)
 
-            router.replace('/dashboard')
-        } else {
-            alert('로그인 실패! 다시 시도해주세요.')
-            router.replace('/')
+            try {
+                const member = await getMember(parsedChannelId)
+                setUser(member)
+                router.replace(isNew ? '/onboarding' : '/dashboard')
+            } catch {
+                clearAuthSession()
+                setErrorMessage('회원 정보를 불러오지 못했습니다. 다시 로그인해주세요.')
+            }
         }
+
+        void handleCallback()
     }, [router, setUser])
 
     return (
-        <div className="flex items-center justify-center min-h-screen">
-            <p>로그인 처리 중...</p>
+        <div className="flex min-h-screen flex-col items-center justify-center gap-4">
+            <p className="font-body-16m text-text-primary">
+                {errorMessage || '로그인 처리 중...'}
+            </p>
+            {errorMessage && (
+                <button
+                    type="button"
+                    onClick={() => router.replace('/')}
+                    className="rounded-[20px] bg-primary-60 px-4 py-2 font-body-14m text-text-primary hover:bg-primary-70"
+                >
+                    처음으로 돌아가기
+                </button>
+            )}
         </div>
     )
 }

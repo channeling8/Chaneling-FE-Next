@@ -1,7 +1,16 @@
 import type { NextConfig } from "next";
 
+type WebpackConfig = Parameters<NonNullable<NextConfig["webpack"]>>[0];
+type SvgRule = {
+  test?: { test?: (value: string) => boolean };
+  issuer?: unknown;
+  resourceQuery?: { not?: RegExp[] } | RegExp;
+  exclude?: RegExp;
+};
+
 const nextConfig: NextConfig = {
   turbopack: {
+    root: process.cwd(),
     rules: {
       "*.svg": {
         loaders: ["@svgr/webpack"],
@@ -9,9 +18,12 @@ const nextConfig: NextConfig = {
       },
     },
   },
-  webpack(config) {
-    const fileLoaderRule = config.module.rules.find((rule: any) =>
-      rule.test?.test?.(".svg")
+  webpack(config: WebpackConfig) {
+    const fileLoaderRule = config.module.rules.find((rule: unknown): rule is SvgRule =>
+      typeof rule === "object" &&
+      rule !== null &&
+      "test" in rule &&
+      Boolean((rule as SvgRule).test?.test?.(".svg"))
     );
 
     config.module.rules.push(
