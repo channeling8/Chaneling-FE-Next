@@ -26,7 +26,7 @@ const modalContent: Record<PricingPlanChangeModalVariant, { actionLabel: string;
     },
 }
 
-export default function PricingPlanChangeModal({ isOpen, onClose, variant }: PricingPlanChangeModalProps) {
+export default function PricingPlanChangeModal({ isOpen, onClose, onConfirm, variant }: PricingPlanChangeModalProps) {
     const { actionLabel, description, title } = modalContent[variant]
 
     useEffect(() => {
