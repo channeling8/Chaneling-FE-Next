@@ -15,6 +15,7 @@ interface ReportDetailPageProps {
  */
 export default async function ReportDetailPage({ params }: ReportDetailPageProps) {
     const { id } = await params
+    const reportId = Number(id)
 
     return (
         <div className="flex h-full w-full flex-col bg-bg-0 desktop:pt-3">
@@ -23,12 +24,12 @@ export default async function ReportDetailPage({ params }: ReportDetailPageProps
                 <PageContent as="main" className="flex flex-col gap-4 pt-4 pb-16">
                     {/* 영상 정보 */}
                     <div className="flex gap-4 flex-col tablet:flex-row">
-                        <div className="w-82 h-46 tablet:w-59.25 tablet:h-33.25 desktop:w-79 desktop:h-44.5 rounded-[20px] bg-bg-3"></div>
+                        <div className="aspect-[328/184] w-full rounded-[20px] bg-bg-3 tablet:aspect-auto tablet:h-33.25 tablet:w-59.25 desktop:h-44.5 desktop:w-79"></div>
                         <div className="flex flex-col gap-1 justify-start items-start">
                             <div className="px-2 py-1 rounded-[20px] bg-bg-2 font-caption-12m desktop:font-caption-14m text-text-primary">
                                 Long-Form
                             </div>
-                            <div className="font-title-14sb desktop:font-title-20sb text-text-primary">
+                            <div className="font-title-18sb text-text-primary">
                                 주말 아침 루틴 | 느긋한 브런치 만들기
                             </div>
                             <div className="font-body-14r desktop:font-body-16r text-text-secondary">
@@ -40,7 +41,7 @@ export default async function ReportDetailPage({ params }: ReportDetailPageProps
                         </div>
                     </div>
 
-                    <ReportTabs />
+                    <ReportTabs reportId={reportId} />
                 </PageContent>
             </Scroll>
         </div>

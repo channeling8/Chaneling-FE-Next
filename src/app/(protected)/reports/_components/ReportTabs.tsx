@@ -1,6 +1,9 @@
 'use client'
 
+import { getReportAnalysis } from '@/api/report'
+import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
+import AnalysisTab from './AnalysisTab'
 import OverviewTab from './OverviewTab'
 
 type TabType = 'overview' | 'analysis'
@@ -10,8 +13,18 @@ const TABS = [
     { id: 'analysis', label: '분석' },
 ] as const
 
-export default function ReportTabs() {
+interface ReportTabsProps {
+    reportId: number
+}
+
+export default function ReportTabs({ reportId }: ReportTabsProps) {
     const [activeTab, setActiveTab] = useState<TabType>('overview')
+    const isValidReportId = Number.isInteger(reportId) && reportId > 0
+    const analysisQuery = useQuery({
+        queryKey: ['reports', reportId, 'analysis'],
+        queryFn: () => getReportAnalysis(reportId),
+        enabled: isValidReportId,
+    })
 
     const tabBaseClass =
         'flex flex-1 p-2 justify-center items-center rounded-2xl font-body-16sb desktop:font-body-18sb cursor-pointer transition-colors'
@@ -38,12 +51,12 @@ export default function ReportTabs() {
             {activeTab === 'overview' && <OverviewTab />}
 
             {activeTab === 'analysis' && (
-                <section className="flex flex-col gap-4">
-                    <div className="rounded-[20px] bg-bg-1 p-4 text-text-primary font-body-16r">분석 내용 영역</div>
-
-                    {/* TODO: AI 구간 분석 섹션 */}
-                    {/* TODO: 개선 제안 섹션 */}
-                </section>
+                <AnalysisTab
+                    analysis={analysisQuery.data}
+                    isPending={analysisQuery.isPending}
+                    isError={!isValidReportId || analysisQuery.isError}
+                    onRetry={isValidReportId ? () => void analysisQuery.refetch() : undefined}
+                />
             )}
         </div>
     )
