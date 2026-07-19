@@ -33,6 +33,9 @@ export default function AuthCallbackPage() {
             const isNew = urlParams.get('isNew') === 'true'
             const parsedChannelId = Number(channelId)
 
+            // access token이 브라우저 주소, history, referrer에 오래 남지 않도록 즉시 제거
+            window.history.replaceState(null, '', window.location.pathname)
+
             if (
                 message !== 'Success'
                 || !accessToken
