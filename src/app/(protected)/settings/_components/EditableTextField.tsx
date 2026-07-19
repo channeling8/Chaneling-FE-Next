@@ -5,7 +5,7 @@ import TextField, { type TextFieldProps } from '@/components/TextField'
 
 interface EditableTextFieldProps extends Omit<TextFieldProps, 'value' | 'onChange'> {
     initialValue?: string
-    onSave?: (value: string) => void
+    onSave?: (value: string) => void | Promise<void>
 }
 
 export default function EditableTextField({
@@ -19,6 +19,7 @@ export default function EditableTextField({
     const [savedValue, setSavedValue] = useState(initialValue)
     const [draftValue, setDraftValue] = useState(initialValue)
     const [isEditing, setIsEditing] = useState(false)
+    const [isSaving, setIsSaving] = useState(false)
 
     useEffect(() => {
         setSavedValue(initialValue)
@@ -41,11 +42,20 @@ export default function EditableTextField({
         closeEditor()
     }
 
-    function handleSave(event: MouseEvent<HTMLButtonElement>) {
+    async function handleSave(event: MouseEvent<HTMLButtonElement>) {
         event.currentTarget.blur()
-        setSavedValue(draftValue)
-        onSave?.(draftValue)
-        closeEditor()
+        setIsSaving(true)
+
+        try {
+            await onSave?.(draftValue)
+            setSavedValue(draftValue)
+            closeEditor()
+        } catch {
+            setDraftValue(savedValue)
+            closeEditor()
+        } finally {
+            setIsSaving(false)
+        }
     }
 
     return (
@@ -65,6 +75,7 @@ export default function EditableTextField({
             <div className={`${isEditing ? 'flex' : 'hidden'} gap-1 pb-2 group-focus-within/editable:flex`}>
                 <button
                     type="button"
+                    disabled={isSaving}
                     onMouseDown={(event) => event.preventDefault()}
                     onClick={handleCancel}
                     className="rounded-[20px] bg-bg-1 px-3 py-1.5 font-caption-12m text-text-primary transition-colors hover:bg-bg-2"
@@ -73,11 +84,12 @@ export default function EditableTextField({
                 </button>
                 <button
                     type="button"
+                    disabled={isSaving}
                     onMouseDown={(event) => event.preventDefault()}
                     onClick={handleSave}
                     className="rounded-[20px] bg-primary-60 px-3 py-1.5 font-caption-12m text-text-primary transition-colors hover:bg-primary-70"
                 >
-                    저장
+                    {isSaving ? '저장 중' : '저장'}
                 </button>
             </div>
         </div>
