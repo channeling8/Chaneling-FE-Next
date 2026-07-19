@@ -1,11 +1,12 @@
 'use client'
 
-import { useQuery } from '@tanstack/react-query'
+import { useQueries, useQuery } from '@tanstack/react-query'
 import Scroll from '@/components/Scroll'
 import PageContent from '@/components/layout/PageContent'
 import StatusBadge from '@/components/StatusBadge'
 import {
     getDashboardMetadata,
+    getDashboardSuggestionDetail,
     getDashboardSuggestions,
     type DashboardScoreType,
 } from '@/api/dashboard'
@@ -97,6 +98,13 @@ export default function DashboardPage() {
         queryKey: ['dashboard', 'suggestions'],
         queryFn: getDashboardSuggestions,
     })
+    const suggestionDetailQueries = useQueries({
+        queries: (suggestions?.suggestionList ?? []).map((suggestion) => ({
+            queryKey: ['dashboard', 'suggestions', suggestion.suggestionId],
+            queryFn: () => getDashboardSuggestionDetail(suggestion.suggestionId),
+        })),
+    })
+    const areSuggestionDetailsPending = suggestionDetailQueries.some((query) => query.isPending)
 
     const renderedMetrics = scoreTypeOrder.map((scoreType) => {
         const score = metadata?.channelScoreList.find((item) => item.scoreType === scoreType)
@@ -151,7 +159,7 @@ export default function DashboardPage() {
 
                     <UploadCycleChart />
 
-                    {isSuggestionsPending ? (
+                    {isSuggestionsPending || areSuggestionDetailsPending ? (
                         <DashboardSuggestionsSkeleton />
                     ) : suggestions ? (
                         <section className="flex w-full flex-col gap-6">
@@ -164,11 +172,14 @@ export default function DashboardPage() {
                                 )}
                             </div>
                             <div className="flex flex-col gap-2">
-                                {suggestions.suggestionList.map((insight) => (
+                                {suggestions.suggestionList.map((insight, index) => (
                                     <InsightCard
                                         key={insight.suggestionId}
                                         title={insight.title}
                                         description={insight.description}
+                                        tags={suggestionDetailQueries[index]?.data?.expectedMetrics.map(
+                                            (metric) => `${metric.label}: ${metric.value}`
+                                        )}
                                         href={`/dashboard/insights/${insight.suggestionId}`}
                                     />
                                 ))}
