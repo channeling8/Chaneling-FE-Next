@@ -1,8 +1,15 @@
 'use client'
 
+import { useQuery } from '@tanstack/react-query'
 import { useMemo, useState } from 'react'
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import type { TooltipContentProps } from 'recharts'
+import {
+    getDashboardGraph,
+    type DashboardPeriod,
+    type DashboardScoreType,
+} from '@/api/dashboard'
+import { DashboardChartSkeleton } from '@/components/dashboard/DashboardSkeletons'
 
 const metrics = ['채널 성장', '알고리즘', '시청 몰입', '반응 밀도', '유입 활력', '업로드 주기'] as const
 const periods = ['1주', '1달'] as const
@@ -12,51 +19,16 @@ type Period = (typeof periods)[number]
 
 interface ChartPoint {
     date: string
-    score: number
+    score: number | null
 }
 
-const chartData: Record<Period, ChartPoint[]> = {
-    '1주': [
-        { date: '2026.02.19', score: 39 },
-        { date: '2026.02.20', score: 41 },
-        { date: '2026.02.21', score: 45 },
-        { date: '2026.02.22', score: 48 },
-        { date: '2026.02.23', score: 50 },
-        { date: '2026.02.24', score: 68 },
-        { date: '2026.02.25', score: 74 },
-    ],
-    '1달': [
-        { date: '2026.01.27', score: 31 },
-        { date: '2026.01.30', score: 34 },
-        { date: '2026.02.02', score: 36 },
-        { date: '2026.02.05', score: 40 },
-        { date: '2026.02.08', score: 43 },
-        { date: '2026.02.11', score: 47 },
-        { date: '2026.02.14', score: 50 },
-        { date: '2026.02.17', score: 54 },
-        { date: '2026.02.19', score: 58 },
-        { date: '2026.02.21', score: 69 },
-        { date: '2026.02.23', score: 78 },
-        { date: '2026.02.25', score: 84 },
-    ],
-}
-
-const metricOffsets: Record<Metric, number> = {
-    '채널 성장': 0,
-    '알고리즘': -5,
-    '시청 몰입': 4,
-    '반응 밀도': 1,
-    '유입 활력': -2,
-    '업로드 주기': 6,
-}
-
-function getMetricData(metric: Metric, period: Period) {
-    const offset = metricOffsets[metric]
-
-    return chartData[period].map((point, index) => ({
-        ...point,
-        score: Math.max(0, Math.min(100, point.score + offset + ((index % 3) - 1) * Math.abs(offset) * 0.2)),
-    }))
+const metricScoreTypes: Record<Metric, DashboardScoreType> = {
+    '채널 성장': 'CHANNEL_GROWTH',
+    '알고리즘': 'ALGORITHM',
+    '시청 몰입': 'VIEW_ENGAGEMENT',
+    '반응 밀도': 'REACTION_DENSITY',
+    '유입 활력': 'INFLOW_ACTIVITY',
+    '업로드 주기': 'UPLOAD_CYCLE',
 }
 
 interface ChartTooltipProps extends TooltipContentProps {
@@ -67,6 +39,8 @@ function ChartTooltip({ active, activeIndex, dataLength, payload }: ChartTooltip
     if (!active || !payload || !payload.length) return null
 
     const point = payload[0].payload as ChartPoint
+    if (point.score === null) return null
+
     const index = Number(activeIndex)
     const alignment = index === 0
         ? 'items-start text-left'
@@ -89,7 +63,25 @@ function ChartTooltip({ active, activeIndex, dataLength, payload }: ChartTooltip
 export default function UploadCycleChart() {
     const [activeMetric, setActiveMetric] = useState<Metric>('채널 성장')
     const [period, setPeriod] = useState<Period>('1주')
-    const data = useMemo(() => getMetricData(activeMetric, period), [activeMetric, period])
+    const apiPeriod: DashboardPeriod = period === '1주' ? 'WEEK' : 'MONTH'
+    const { data: graph, isPending } = useQuery({
+        queryKey: ['dashboard', 'graph', apiPeriod],
+        queryFn: () => getDashboardGraph(apiPeriod),
+    })
+    const data = useMemo(() => {
+        const scoreHistory = graph?.scoreGraphs.find(
+            (scoreGraph) => scoreGraph.scoreType === metricScoreTypes[activeMetric]
+        )?.scoreHistory
+
+        if (!scoreHistory?.length) return []
+
+        return scoreHistory.map((point) => ({
+            date: point.date.replaceAll('-', '.'),
+            score: point.score,
+        }))
+    }, [activeMetric, graph])
+
+    if (isPending) return <DashboardChartSkeleton />
 
     return (
         <section className="flex w-full flex-col gap-[22px] rounded-[20px] bg-bg-1 p-5">
@@ -140,7 +132,13 @@ export default function UploadCycleChart() {
                         <XAxis dataKey="date" hide padding={{ left: 0, right: 0 }} />
                         <YAxis hide domain={[0, 100]} />
                         <Tooltip
-                            defaultIndex={period === '1주' ? 0 : 8}
+                            defaultIndex={
+                                data.length === 0
+                                    ? undefined
+                                    : period === '1주'
+                                        ? 0
+                                        : data.length - 1
+                            }
                             position={{ y: 0 }}
                             offset={0}
                             allowEscapeViewBox={{ x: true, y: false }}
