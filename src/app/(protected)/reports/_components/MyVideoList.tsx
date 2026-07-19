@@ -1,3 +1,6 @@
+'use client'
+
+import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import VideoCard from './VideoCard'
 import VideoSearchInputBar from './VideoSearchInputBar'
@@ -5,6 +8,7 @@ import MyVideoSelect from './MyVideoSelect'
 import { Modal } from '@/components/Modal'
 
 export default function MyVideoList() {
+    const router = useRouter()
     const [selectedVideo, setSelectedVideo] = useState<boolean>(false)
     const [isModalOpen, setIsModalOpen] = useState(false)
     const handleClose = () => {
@@ -37,24 +41,28 @@ export default function MyVideoList() {
                     leftside="조회수"
                     rightside="17만회"
                     period="3년 전"
+                    onClick={() => router.push('/reports/period')}
                 />
                 <VideoCard
                     title="영상제목이 들어가는 곳입니다. 2줄까지 가능합니다. 나머지는 ...처리해주세요"
                     leftside="조회수"
                     rightside="17만회"
                     period="3년 전"
+                    onClick={() => router.push('/reports/period')}
                 />
                 <VideoCard
                     title="영상제목이 들어가는 곳입니다. 2줄까지 가능합니다. 나머지는 ...처리해주세요"
                     leftside="조회수"
                     rightside="17만회"
                     period="3년 전"
+                    onClick={() => router.push('/reports/period')}
                 />
                 <VideoCard
                     title="영상제목이 들어가는 곳입니다. 2줄까지 가능합니다. 나머지는 ...처리해주세요"
                     leftside="조회수"
                     rightside="17만회"
                     period="3년 전"
+                    onClick={() => router.push('/reports/period')}
                 />
             </div>
             <button className="px-4 py-2 w-full bg-bg-1 rounded-[20px]" onClick={() => setSelectedVideo(true)}>

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import Tab from '../../ideas/_components/Tab'
 import SearchBar from './SearchBar'
 import Chip from '@/components/Chip'
@@ -9,13 +10,22 @@ import DropdownOrder from '@/components/dropdown-order'
 import ReportList from './ReportList'
 
 export default function VideoReport() {
+    const router = useRouter()
     const [activeTab, setActiveTab] = useState<'myreport' | 'recommend'>('myreport')
     const [activeChip, setActiveChip] = useState<'all' | 'longform' | 'shortform'>('all')
     const [isOpenReportList, setIsOpenReportList] = useState(false)
 
     const [order, setOrder] = useState('최신순')
 
-    if (isOpenReportList) return <ReportList totalCount={9} onBack={() => setIsOpenReportList(false)} />
+    if (isOpenReportList) {
+        return (
+            <ReportList
+                totalCount={9}
+                onBack={() => setIsOpenReportList(false)}
+                onCreate={() => router.push('/reports/period')}
+            />
+        )
+    }
     return (
         <div>
             <Tab title="내 리포트 내역" onClick={() => setActiveTab('myreport')} isActive={activeTab === 'myreport'} />

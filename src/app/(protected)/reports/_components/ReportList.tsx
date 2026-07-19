@@ -8,9 +8,10 @@ import ReportBox from './ReportBox'
 interface ReportListProps {
     totalCount: number
     onBack: () => void
+    onCreate: () => void
 }
 
-export default function ReportList({ totalCount, onBack }: ReportListProps) {
+export default function ReportList({ totalCount, onBack, onCreate }: ReportListProps) {
     const [isDelete, setIsDelete] = useState(false)
 
     return (
@@ -31,7 +32,9 @@ export default function ReportList({ totalCount, onBack }: ReportListProps) {
                     </div>
                     <div className="flex gap-2">
                         <Bin onClick={() => setIsDelete((prev) => !prev)} />
-                        <Plus />
+                        <button type="button" onClick={onCreate} className="flex" aria-label="리포트 생성">
+                            <Plus />
+                        </button>
                     </div>
                 </header>
                 <div className="pt-2 flex">
