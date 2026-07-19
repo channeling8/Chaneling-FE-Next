@@ -1,16 +1,16 @@
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { changeIdeaBookmark, getBookmarkedIdeas } from '@/api/ideas'
 import type { IdeaDetail, IdeaSort } from '@/api/ideas'
 import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import SavedIdeaCard from './SavedIdeaCard'
 import SearchBar from './SearchBar'
-import IdeaDetailView from './IdeaDetailView'
 import DropdownOrder from '@/components/dropdown-order'
 import { SkeletonBase } from '@/components/skeletonbase'
 import { useIdeasStore } from '@/stores/ideasStore'
 
 export default function SavedIdea() {
-    const [selectedIdeaId, setSelectedIdeaId] = useState<number | null>(null)
+    const router = useRouter()
     const [searchKeyword, setSearchKeyword] = useState('')
     const [debouncedKeyword, setDebouncedKeyword] = useState('')
     const [sort, setSort] = useState<IdeaSort>('latest')
@@ -67,10 +67,6 @@ export default function SavedIdea() {
         })
     const totalIdeas = debouncedKeyword ? ideas.length : (ideasQuery.data?.pages[0]?.total ?? 0)
 
-    if (selectedIdeaId !== null) {
-        return <IdeaDetailView ideaId={selectedIdeaId} onBack={() => setSelectedIdeaId(null)} />
-    }
-
     return (
         <section className="flex w-full flex-col justify-start gap-2">
             <h1 className="text-text-primary font-title-18sb">저장한 아이디어</h1>
@@ -118,7 +114,7 @@ export default function SavedIdea() {
                     <SavedIdeaCard
                         key={idea.ideaId}
                         idea={idea}
-                        onClick={() => setSelectedIdeaId(idea.ideaId)}
+                        onClick={() => router.push(`/ideas/${idea.ideaId}`)}
                         onBookmarkClick={() => bookmarkMutation.mutate(idea.ideaId)}
                         isBookmarkPending={bookmarkMutation.isPending && bookmarkMutation.variables === idea.ideaId}
                     />

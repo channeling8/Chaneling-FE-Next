@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import axios from 'axios'
 
@@ -12,7 +13,6 @@ import TextField from '@/components/TextField'
 import GenerationButton from './GenerationButton'
 import { SkeletonBase } from '@/components/skeletonbase'
 import SavedIdeaCard from './SavedIdeaCard'
-import IdeaDetailView from './IdeaDetailView'
 
 const VIDEO_TYPE_MAP: Record<string, IdeaVideoType> = {
     선택없음: 'ALL',
@@ -46,11 +46,11 @@ const DEFAULT_GENERATION_ERROR: GenerationErrorModalContent = {
 }
 
 export default function ContentIdeaGeneration({ keyword, onKeywordChange }: ContentIdeaGenerationProps) {
+    const router = useRouter()
     const [isDropdownOpen, setIsDropdownOpen] = useState(false)
     const [detail, setDetail] = useState('')
     const [resultMessage, setResultMessage] = useState('')
     const [generationError, setGenerationError] = useState<GenerationErrorModalContent | null>(null)
-    const [selectedIdeaId, setSelectedIdeaId] = useState<number | null>(null)
     const generatedIdeas = useIdeasStore((state) => state.generatedIdeas)
     const prependGeneratedIdeas = useIdeasStore((state) => state.prependGeneratedIdeas)
     const updateGeneratedIdeaBookmark = useIdeasStore((state) => state.updateGeneratedIdeaBookmark)
@@ -200,7 +200,7 @@ export default function ContentIdeaGeneration({ keyword, onKeywordChange }: Cont
                             <SavedIdeaCard
                                 key={idea.ideaId}
                                 idea={idea}
-                                onClick={() => setSelectedIdeaId(idea.ideaId)}
+                                onClick={() => router.push(`/ideas/${idea.ideaId}`)}
                                 onBookmarkClick={() => bookmarkMutation.mutate(idea.ideaId)}
                                 isBookmarkPending={
                                     bookmarkMutation.isPending && bookmarkMutation.variables === idea.ideaId
@@ -225,10 +225,6 @@ export default function ContentIdeaGeneration({ keyword, onKeywordChange }: Cont
                     </Modal.Button>
                 </Modal.Footer>
             </Modal>
-
-            {selectedIdeaId !== null && (
-                <IdeaDetailView ideaId={selectedIdeaId} onBack={() => setSelectedIdeaId(null)} />
-            )}
         </div>
     )
 }
