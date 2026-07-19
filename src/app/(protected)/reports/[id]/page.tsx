@@ -1,7 +1,7 @@
 import PageContent from '@/components/layout/PageContent'
 import ReportTabs from '../_components/ReportTabs'
 import Scroll from '@/components/Scroll'
-import Header from '@/components/layout/Header'
+import ReportDetailHeader from './_components/ReportDetailHeader'
 
 interface ReportDetailPageProps {
     params: Promise<{ id: string }>
@@ -20,7 +20,7 @@ export default async function ReportDetailPage({ params }: ReportDetailPageProps
     return (
         <div className="flex h-full w-full flex-col bg-bg-0 desktop:pt-3">
             <Scroll as="main" className="flex-1">
-                <Header title="상세 분석 리포트" showMenu={true} />
+                <ReportDetailHeader />
                 <PageContent as="main" className="flex flex-col gap-4 pt-4 pb-16">
                     {/* 영상 정보 */}
                     <div className="flex gap-4 flex-col tablet:flex-row">
