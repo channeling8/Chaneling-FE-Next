@@ -1,10 +1,63 @@
 import { useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
+import { getTrendKeywords } from '@/api/ideas'
+import type { TrendKeyword as TrendKeywordItem } from '@/api/ideas'
+import { SkeletonBase } from '@/components/skeletonbase'
 import Tab from './Tab'
 import KeywordBox from './KeywordBox'
 import Infoicon from '@/assets/icons/infoIcon.svg'
 
-export default function TrendKeyword() {
+function deduplicateKeywords(keywords: TrendKeywordItem[]) {
+    const uniqueKeywords = new Map<string, TrendKeywordItem>()
+
+    keywords.forEach((keyword) => {
+        const normalizedKeyword = keyword.keyword.trim()
+        const previousKeyword = uniqueKeywords.get(normalizedKeyword)
+
+        if (!previousKeyword || keyword.score > previousKeyword.score) {
+            uniqueKeywords.set(normalizedKeyword, {
+                ...keyword,
+                keyword: normalizedKeyword,
+            })
+        }
+    })
+
+    return Array.from(uniqueKeywords.values()).slice(0, 5)
+}
+
+function KeywordList({
+    keywords,
+    onKeywordSelect,
+}: {
+    keywords: TrendKeywordItem[]
+    onKeywordSelect: (keyword: string) => void
+}) {
+    if (keywords.length === 0) {
+        return (
+            <div className="flex min-h-30 items-center justify-center font-body-14r text-text-secondary">
+                표시할 트렌드 키워드가 없습니다.
+            </div>
+        )
+    }
+
+    return (
+        <div className="flex flex-col mt-3.5 w-full">
+            {keywords.map((keyword, index) => (
+                <KeywordBox key={keyword.trendKeywordId} keyword={keyword} rank={index + 1} onClick={onKeywordSelect} />
+            ))}
+        </div>
+    )
+}
+
+export default function TrendKeyword({ onKeywordSelect }: { onKeywordSelect: (keyword: string) => void }) {
     const [activeTab, setActiveTab] = useState<'live' | 'custom'>('live')
+    const { data, isPending, isError, refetch } = useQuery({
+        queryKey: ['trend-keywords'],
+        queryFn: getTrendKeywords,
+    })
+
+    const realTimeKeywords = deduplicateKeywords(data?.realTimeTrendKeywordList ?? [])
+    const channelKeywords = deduplicateKeywords(data?.channelTrendKeywordInfoList ?? [])
 
     return (
         <div className="flex flex-col w-full mt-1 tablet:mt-3 desktop:mt-1">
@@ -21,21 +74,33 @@ export default function TrendKeyword() {
                 <Tab title="실시간" onClick={() => setActiveTab('live')} isActive={activeTab === 'live'} />
                 <Tab title="채널 맞춤형" onClick={() => setActiveTab('custom')} isActive={activeTab === 'custom'} />
             </div>
-            {activeTab === 'live' && (
-                <div className="flex flex-col mt-3.5 w-full">
-                    <KeywordBox />
-                    <KeywordBox />
-                    <KeywordBox />
-                    <KeywordBox />
+
+            {isPending && (
+                <div className="flex flex-col gap-2 pt-3.5">
+                    {[0, 1, 2, 3, 4].map((index) => (
+                        <SkeletonBase key={index} sizeConfig="h-14 w-full" />
+                    ))}
                 </div>
             )}
-            {activeTab === 'custom' && (
-                <div className="flex flex-col mt-3.5">
-                    <KeywordBox />
-                    <KeywordBox />
-                    <KeywordBox />
-                    <KeywordBox />
+
+            {isError && (
+                <div className="flex min-h-40 flex-col items-center justify-center gap-3 text-center">
+                    <p className="font-body-14r text-text-secondary">트렌드 키워드를 불러오지 못했습니다.</p>
+                    <button
+                        type="button"
+                        className="rounded-xl bg-bg-1 px-4 py-2 font-body-14m text-text-primary"
+                        onClick={() => void refetch()}
+                    >
+                        다시 시도
+                    </button>
                 </div>
+            )}
+
+            {!isPending && !isError && activeTab === 'live' && (
+                <KeywordList keywords={realTimeKeywords} onKeywordSelect={onKeywordSelect} />
+            )}
+            {!isPending && !isError && activeTab === 'custom' && (
+                <KeywordList keywords={channelKeywords} onKeywordSelect={onKeywordSelect} />
             )}
         </div>
     )
