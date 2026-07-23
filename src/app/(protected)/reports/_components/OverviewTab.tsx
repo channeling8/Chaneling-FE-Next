@@ -3,7 +3,7 @@ import CommentTab from './CommentTab'
 import EvaluationCard from './EvaluationCard'
 import SummaryComment from './SummaryComment'
 import SummaryCard from './SummaryCard'
-import Comment from './comment'
+import Comment from './Comment'
 
 const commentData = [
     { name: '긍정', value: 30, color: '#4ADE80' },

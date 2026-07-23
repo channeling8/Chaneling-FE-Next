@@ -16,10 +16,6 @@ export default function AuthInitializer() {
     const lastValidatedToken = useRef<string | null>(null)
 
     useEffect(() => {
-        void useAuthStore.persist.rehydrate()
-    }, [])
-
-    useEffect(() => {
         if (!hasHydrated || pathname === '/auth/callback') return
 
         const accessToken = authStorage.getAccessToken()

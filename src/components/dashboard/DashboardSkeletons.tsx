@@ -1,4 +1,4 @@
-import { SkeletonBase } from '@/components/skeletonbase'
+import { SkeletonBase } from '@/components/Skeletonbase'
 
 export function DashboardDateSkeleton() {
     return (
@@ -64,10 +64,7 @@ export function DashboardChartSkeleton() {
             <div className="flex items-center justify-between gap-4">
                 <div className="flex min-w-0 flex-1 gap-2">
                     {Array.from({ length: 4 }, (_, index) => (
-                        <SkeletonBase
-                            key={index}
-                            sizeConfig="h-9 w-16 shrink-0 rounded-md"
-                        />
+                        <SkeletonBase key={index} sizeConfig="h-9 w-16 shrink-0 rounded-md" />
                     ))}
                 </div>
                 <SkeletonBase sizeConfig="h-9 w-20 shrink-0 rounded-[20px]" />
@@ -79,21 +76,14 @@ export function DashboardChartSkeleton() {
 
 export function DashboardSuggestionsSkeleton() {
     return (
-        <section
-            aria-label="채널링의 제안 불러오는 중"
-            className="flex w-full flex-col gap-6"
-            role="status"
-        >
+        <section aria-label="채널링의 제안 불러오는 중" className="flex w-full flex-col gap-6" role="status">
             <div className="flex flex-col gap-2">
                 <SkeletonBase sizeConfig="h-6 w-28 rounded-md" />
                 <SkeletonBase sizeConfig="h-5 w-3/4 rounded-md" />
             </div>
             <div className="flex flex-col gap-2">
                 {Array.from({ length: 3 }, (_, index) => (
-                    <div
-                        className="flex w-full flex-col gap-3 rounded-[20px] bg-bg-1 p-5"
-                        key={index}
-                    >
+                    <div className="flex w-full flex-col gap-3 rounded-[20px] bg-bg-1 p-5" key={index}>
                         <SkeletonBase sizeConfig="h-6 w-2/5 rounded-md" />
                         <SkeletonBase sizeConfig="h-5 w-full rounded-md" />
                         <SkeletonBase sizeConfig="h-5 w-4/5 rounded-md" />
@@ -111,11 +101,7 @@ export function DashboardSuggestionsSkeleton() {
 
 export function DashboardSuggestionDetailSkeleton() {
     return (
-        <article
-            aria-label="제안 상세 내용 불러오는 중"
-            className="flex w-full flex-col gap-4"
-            role="status"
-        >
+        <article aria-label="제안 상세 내용 불러오는 중" className="flex w-full flex-col gap-4" role="status">
             <header className="flex flex-col gap-2">
                 <SkeletonBase sizeConfig="h-6 w-3/5 rounded-md" />
                 <div className="flex flex-wrap gap-1">

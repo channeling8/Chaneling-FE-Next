@@ -6,7 +6,7 @@ import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-q
 import SavedIdeaCard from './SavedIdeaCard'
 import SearchBar from './SearchBar'
 import DropdownOrder from '@/components/dropdown-order'
-import { SkeletonBase } from '@/components/skeletonbase'
+import { SkeletonBase } from '@/components/Skeletonbase'
 import { useIdeasStore } from '@/stores/ideasStore'
 
 export default function SavedIdea() {
