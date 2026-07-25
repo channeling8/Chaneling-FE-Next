@@ -1,6 +1,7 @@
 'use client'
 
 import { FormEvent, useRef, useState } from 'react'
+import Image from 'next/image'
 import Link from 'next/link'
 import ArrowRightIcon from '@/assets/icons/arrow_right.svg'
 import SearchIcon from '@/assets/icons/search.svg'
@@ -77,18 +78,15 @@ export default function ReportPreviewSection() {
                 </span>
 
                 <div className="flex flex-col gap-4 tablet:flex-row">
-                    <div
-                        aria-label="리포트 영상 썸네일 예시"
-                        role="img"
-                        className="aspect-video w-full shrink-0 rounded-[20px] tablet:w-[237px] desktop:w-[316px]"
-                        style={{
-                            backgroundColor: '#fff',
-                            backgroundImage:
-                                'linear-gradient(45deg, #eaeaea 25%, transparent 25%), linear-gradient(-45deg, #eaeaea 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #eaeaea 75%), linear-gradient(-45deg, transparent 75%, #eaeaea 75%)',
-                            backgroundPosition: '0 0, 0 8px, 8px -8px, -8px 0',
-                            backgroundSize: '16px 16px',
-                        }}
-                    />
+                    <div className="relative aspect-video w-full shrink-0 overflow-hidden rounded-[20px] tablet:w-[237px] desktop:w-[316px]">
+                        <Image
+                            src="/images/dashboard/demo_thumbnail.png"
+                            alt="주말 아침 루틴 영상 썸네일"
+                            fill
+                            sizes="(min-width: 1280px) 316px, (min-width: 768px) 237px, calc(100vw - 32px)"
+                            className="object-cover"
+                        />
+                    </div>
                     <div className="flex min-w-0 flex-col gap-1">
                         <span className="self-start rounded-full bg-bg-2 px-2 py-1 font-caption-12m text-text-primary">
                             Long-Form
