@@ -4,7 +4,7 @@ export type VideoInfoResponse = {
     videoTitle: string
     videoThumbnailUrl: string
     videoCategory: string
-    videoType: 'ALL'|'LONG'|'SHORTS'
+    videoType: 'ALL' | 'LONG' | 'SHORTS'
     viewCount: number
     videoCreatedDate: string
     ChannelName: string

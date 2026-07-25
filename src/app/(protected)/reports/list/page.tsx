@@ -12,11 +12,7 @@ import { VideoInfoResponse } from '@/types/videos'
 import { formatKoreanDate, formatKoreanDateTime, formatRelativeTime } from '@/utils/format'
 import { useGetVideoReportList } from '@/hooks/useGetVideoReportList'
 
-interface ReportListProps {
-    onCreate: () => void
-}
-
-export default function ReportList({ onCreate }: ReportListProps) {
+export default function ReportList() {
     const router = useRouter()
     const [isDelete, setIsDelete] = useState(false)
 
@@ -34,7 +30,7 @@ export default function ReportList({ onCreate }: ReportListProps) {
         }
 
         void fetchVideoInfo()
-    }, [selectedVideoId])
+    }, [videoId])
 
     if (selectedVideoId == null) {
         return null
@@ -59,8 +55,15 @@ export default function ReportList({ onCreate }: ReportListProps) {
                         <Bin onClick={() => setIsDelete((prev) => !prev)} />
                         <button
                             type="button"
-                            onClick={() => router.push('/reports/period')}
-                            className="flex"
+                            disabled={!videoInfo}
+                            onClick={() => {
+                                if (!videoInfo) return
+
+                                router.push(
+                                    `/reports/period?videoId=${selectedVideoId}&uploadDate=${encodeURIComponent(videoInfo.videoCreatedDate)}`
+                                )
+                            }}
+                            className="flex disabled:cursor-not-allowed disabled:opacity-40"
                             aria-label="리포트 생성"
                         >
                             <Plus />

@@ -11,7 +11,7 @@ import { useIdeasStore } from '@/stores/ideasStore'
 import { DropdownVideoType } from './DropdownVideotype'
 import TextField from '@/components/TextField'
 import GenerationButton from './GenerationButton'
-import { SkeletonBase } from '@/components/Skeletonbase'
+import { SkeletonBase } from '@/components/skeletonbase'
 import SavedIdeaCard from './SavedIdeaCard'
 
 const VIDEO_TYPE_MAP: Record<string, IdeaVideoType> = {

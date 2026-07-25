@@ -1,6 +1,7 @@
 import ArrowIcon from '@/assets/icons/arrow.svg'
 import X from '@/assets/icons/X.svg'
 import { useDeleteReport } from '@/hooks/useDeleteReport'
+import { useRouter } from 'next/navigation'
 
 interface ReportBoxProps {
     generatedDate: string
@@ -12,6 +13,7 @@ interface ReportBoxProps {
 }
 
 export default function ReportBox({ generatedDate, startDate, endDate, isDelete, reportId, videoId }: ReportBoxProps) {
+    const router = useRouter()
     const { mutate: deleteReport, isPending } = useDeleteReport({ videoId, page: 1, size: 8 })
 
     const handleDelete = () => {
@@ -30,7 +32,13 @@ export default function ReportBox({ generatedDate, startDate, endDate, isDelete,
                         <X />
                     </button>
                 ) : (
-                    <ArrowIcon className="text-text-secondary" />
+                    <button
+                        type="button"
+                        aria-label="리포트 상세 보기"
+                        onClick={() => router.push(`/reports/${reportId}?videoId=${videoId}`)}
+                    >
+                        <ArrowIcon className="text-text-secondary" />
+                    </button>
                 )}
             </div>
             <div className="flex justify-start items-center">

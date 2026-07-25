@@ -12,7 +12,9 @@ export async function getVideoReportList({
     page,
     size,
 }: VideoReportListRequest): Promise<VideoReportListResponse> {
-    const { data } = await api.get<ApiResponse<VideoReportListResponse>>(`videos/${videoId}/reports`)
+    const { data } = await api.get<ApiResponse<VideoReportListResponse>>(`/videos/${videoId}/reports`, {
+        params: { page, size },
+    })
     return data.result
 }
 

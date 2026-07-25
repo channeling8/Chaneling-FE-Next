@@ -65,7 +65,11 @@ export default function MyVideoList() {
                             leftsideamount={`${video.viewCount.toLocaleString()}회`}
                             rightside={formatRelativeTime(video.uploadDate)}
                             imageUrl={video.videoThumbnailUrl}
-                            onClick={() => router.push('/reports/period')}
+                            onClick={() =>
+                                router.push(
+                                    `/reports/period?videoId=${video.videoId}&uploadDate=${encodeURIComponent(video.uploadDate)}`
+                                )
+                            }
                         />
                     ))}
             </div>

@@ -7,6 +7,7 @@ import { useLayoutStore } from '@/stores/layoutStore'
 import Sidebar from '@/components/layout/Sidebar'
 import SidebarSkeleton from '@/components/layout/SidebarSkeleton'
 import DashboardLoadingView from '@/components/dashboard/DashboardLoadingView'
+import GlobalReportProgress from '@/components/report/GlobalReportProgress'
 
 export default function ProtectedLayout({ children }: { children: React.ReactNode }) {
     const router = useRouter()
@@ -36,6 +37,7 @@ export default function ProtectedLayout({ children }: { children: React.ReactNod
     return (
         <div className="flex h-screen w-full bg-bg-0">
             <Sidebar isOpen={isMobileSidebarOpen} onClose={closeSidebar} />
+            <GlobalReportProgress />
 
             <div className="relative flex-1 flex flex-col min-w-0 ">{children}</div>
         </div>

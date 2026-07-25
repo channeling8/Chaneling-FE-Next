@@ -9,6 +9,7 @@ import PageContent from '@/components/layout/PageContent'
 import { useGetChannelVideoList } from '@/hooks/useGetChannelVideoList'
 import { formatRelativeTime } from '@/utils/format'
 import { useRouter } from 'next/navigation'
+import { useVideoStore } from '@/stores/videoStore'
 
 type VideoType = 'ALL' | 'LONG' | 'SHORTS'
 type OrderType = '최신순' | '인기순' | '날짜순'
@@ -22,6 +23,7 @@ const sortMap: Record<OrderType, SortType> = {
 
 export default function MyVideoSelectPage() {
     const router = useRouter()
+    const setSelectedVideoId = useVideoStore((state) => state.setSelectedVideoId)
     const [activeChip, setActiveChip] = useState<VideoType>('ALL')
 
     const [order, setOrder] = useState<OrderType>('최신순')
@@ -96,7 +98,12 @@ export default function MyVideoSelectPage() {
                                 leftsideamount={`${video.viewCount.toLocaleString()}회`}
                                 rightside={formatRelativeTime(video.uploadDate)}
                                 imageUrl={video.videoThumbnailUrl}
-                                onClick={() => router.push('/reports/period')}
+                                onClick={() => {
+                                    setSelectedVideoId(video.videoId)
+                                    router.push(
+                                        `/reports/period?videoId=${video.videoId}&uploadDate=${encodeURIComponent(video.uploadDate)}`
+                                    )
+                                }}
                             />
                         ))}
                 </div>

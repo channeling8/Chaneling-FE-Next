@@ -1,4 +1,4 @@
-import { SkeletonBase } from '@/components/Skeletonbase'
+import { SkeletonBase } from '@/components/skeletonbase'
 
 export default function SidebarSkeleton() {
     return (

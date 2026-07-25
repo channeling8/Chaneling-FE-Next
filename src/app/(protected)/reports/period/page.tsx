@@ -1,11 +1,16 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { createReport } from '@/api/report'
+import { useMutation } from '@tanstack/react-query'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { Suspense, useState } from 'react'
 import BackIcon from '@/assets/icons/back.svg'
 import Chip from '@/components/Chip'
 import Header from '@/components/layout/Header'
 import PageContent from '@/components/layout/PageContent'
+import { Modal } from '@/components/Modal'
+import { useVideoStore } from '@/stores/videoStore'
+import ReportDetailSkeleton from '../_components/ReportDetailSkeleton'
 
 type PeriodPreset = 'all' | 'today' | 'last7Days' | 'last30Days' | 'thisMonth'
 
@@ -31,6 +36,18 @@ function toDateInputValue(date: Date) {
     const day = String(date.getDate()).padStart(2, '0')
 
     return `${year}-${month}-${day}`
+}
+
+function normalizeDateValue(value: string | null) {
+    const dateValue = value?.match(/^\d{4}-\d{2}-\d{2}/)?.[0]
+    if (!dateValue) return null
+
+    const [year, month, day] = dateValue.split('-').map(Number)
+    const date = new Date(year, month - 1, day)
+    const isValidDate =
+        date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day
+
+    return isValidDate ? dateValue : null
 }
 
 function formatDate(value: string) {
@@ -66,11 +83,31 @@ function DateField({ label, max, min, onChange, value }: DateFieldProps) {
     )
 }
 
-export default function ReportPeriodPage() {
+function ReportPeriodContent() {
     const router = useRouter()
+    const searchParams = useSearchParams()
     const [activePreset, setActivePreset] = useState<PeriodPreset | null>('all')
     const [startDate, setStartDate] = useState('')
     const [endDate, setEndDate] = useState('')
+    const [creationError, setCreationError] = useState('')
+    const selectedVideoId = useVideoStore((state) => state.selectedVideoId)
+    const setSelectedVideoId = useVideoStore((state) => state.setSelectedVideoId)
+    const queryVideoId = Number(searchParams.get('videoId'))
+    const videoId = Number.isInteger(queryVideoId) && queryVideoId > 0 ? queryVideoId : (selectedVideoId ?? 0)
+    const isVideoIdValid = Number.isInteger(videoId) && videoId > 0
+    const today = toDateInputValue(new Date())
+    const videoUploadDate = normalizeDateValue(searchParams.get('uploadDate'))
+    const isVideoUploadDateValid = videoUploadDate !== null && videoUploadDate <= today
+    const createReportMutation = useMutation({
+        mutationFn: createReport,
+        onSuccess: ({ reportId, videoId: createdVideoId }) => {
+            setSelectedVideoId(createdVideoId)
+            router.replace(`/reports/${reportId}?videoId=${createdVideoId}`)
+        },
+        onError: () => {
+            setCreationError('잠시 후 다시 시도해 주세요.')
+        },
+    })
 
     const selectPreset = (preset: PeriodPreset) => {
         setActivePreset(preset)
@@ -81,23 +118,26 @@ export default function ReportPeriodPage() {
             return
         }
 
-        const today = new Date()
-        const start = new Date(today)
+        const todayDate = new Date()
+        const start = new Date(todayDate)
 
         if (preset === 'last7Days') {
-            start.setDate(today.getDate() - 6)
+            start.setDate(todayDate.getDate() - 6)
         }
 
         if (preset === 'last30Days') {
-            start.setDate(today.getDate() - 29)
+            start.setDate(todayDate.getDate() - 29)
         }
 
         if (preset === 'thisMonth') {
             start.setDate(1)
         }
 
-        setStartDate(toDateInputValue(start))
-        setEndDate(toDateInputValue(today))
+        const presetStartDate = toDateInputValue(start)
+        setStartDate(
+            isVideoUploadDateValid && presetStartDate < videoUploadDate ? videoUploadDate : presetStartDate
+        )
+        setEndDate(today)
     }
 
     const changeStartDate = (value: string) => {
@@ -111,7 +151,45 @@ export default function ReportPeriodPage() {
     }
 
     const isPeriodValid =
-        activePreset !== null || (startDate !== '' && endDate !== '' && startDate <= endDate)
+        activePreset !== null ||
+        (startDate !== '' &&
+            endDate !== '' &&
+            startDate <= endDate &&
+            isVideoUploadDateValid &&
+            startDate >= videoUploadDate &&
+            endDate <= today)
+
+    const handleCreateReport = () => {
+        if (!isVideoIdValid) {
+            setCreationError('분석할 영상을 다시 선택해 주세요.')
+            return
+        }
+
+        if (!isVideoUploadDateValid) {
+            setCreationError('영상 업로드 날짜를 다시 확인해 주세요.')
+            return
+        }
+
+        const requestStartDate = activePreset === 'all' ? videoUploadDate : startDate
+        const requestEndDate = activePreset === 'all' ? today : endDate
+
+        setCreationError('')
+        createReportMutation.mutate({
+            videoId,
+            startDate: requestStartDate,
+            endDate: requestEndDate,
+        })
+    }
+
+    if (createReportMutation.isPending || createReportMutation.isSuccess) {
+        return (
+            <ReportDetailSkeleton
+                currentStep={1}
+                title="리포트 생성 중"
+                statusMessage="유튜브 데이터를 수집하고 있습니다."
+            />
+        )
+    }
 
     return (
         <div className="flex h-full w-full flex-col bg-bg-0 desktop:pt-3">
@@ -156,13 +234,15 @@ export default function ReportPeriodPage() {
                     <div className="mt-2 flex flex-col gap-2">
                         <DateField
                             label="시작일"
-                            max={endDate || undefined}
+                            max={endDate || today}
+                            min={videoUploadDate ?? undefined}
                             onChange={changeStartDate}
                             value={startDate}
                         />
                         <DateField
                             label="종료일"
-                            min={startDate || undefined}
+                            max={today}
+                            min={startDate || videoUploadDate || undefined}
                             onChange={changeEndDate}
                             value={endDate}
                         />
@@ -172,11 +252,31 @@ export default function ReportPeriodPage() {
                 <button
                     type="button"
                     disabled={!isPeriodValid}
+                    onClick={handleCreateReport}
                     className="fixed bottom-8 left-4 right-4 flex h-12 cursor-pointer items-center justify-center rounded-[20px] bg-primary-60 px-2 font-body-16sb text-text-primary disabled:cursor-not-allowed disabled:bg-gray-30 disabled:text-text-secondary tablet:static tablet:mt-4 tablet:w-full desktop:h-[49px]"
                 >
                     리포트 생성 시작
                 </button>
             </PageContent>
+
+            <Modal isOpen={Boolean(creationError)} onClose={() => setCreationError('')}>
+                <Modal.Header title="리포트를 생성하지 못했어요" caption={creationError} />
+                <Modal.Footer>
+                    <Modal.Button type="button" variant="error" onClick={() => setCreationError('')}>
+                        확인
+                    </Modal.Button>
+                </Modal.Footer>
+            </Modal>
         </div>
+    )
+}
+
+export default function ReportPeriodPage() {
+    return (
+        <Suspense
+            fallback={<ReportDetailSkeleton title="리포트 기간 설정" statusMessage="기간 설정을 불러오고 있습니다." />}
+        >
+            <ReportPeriodContent />
+        </Suspense>
     )
 }

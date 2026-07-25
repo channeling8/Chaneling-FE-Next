@@ -5,52 +5,34 @@ import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 import AnalysisTab from './AnalysisTab'
 import OverviewTab from './OverviewTab'
-
-type TabType = 'overview' | 'analysis'
-
-const TABS = [
-    { id: 'overview', label: '개요' },
-    { id: 'analysis', label: '분석' },
-] as const
+import OverviewTabSkeleton from './OverviewTabSkeleton'
+import ReportTabBar, { type ReportTabType } from './ReportTabBar'
 
 interface ReportTabsProps {
+    isProcessing?: boolean
     reportId: number
 }
 
-export default function ReportTabs({ reportId }: ReportTabsProps) {
-    const [activeTab, setActiveTab] = useState<TabType>('overview')
+export default function ReportTabs({ isProcessing = false, reportId }: ReportTabsProps) {
+    const [activeTab, setActiveTab] = useState<ReportTabType>('overview')
     const isValidReportId = Number.isInteger(reportId) && reportId > 0
     const analysisQuery = useQuery({
         queryKey: ['reports', reportId, 'analysis'],
         queryFn: () => getReportAnalysis(reportId),
-        enabled: isValidReportId,
+        enabled: isValidReportId && !isProcessing,
     })
-
-    const tabBaseClass =
-        'flex flex-1 p-2 justify-center items-center rounded-2xl font-body-16sb desktop:font-body-18sb cursor-pointer transition-colors'
 
     return (
         <div className="flex flex-col gap-4">
-            <div className="flex p-1 items-center rounded-[20px] bg-bg-1">
-                {TABS.map((tab) => (
-                    <button
-                        key={tab.id}
-                        type="button"
-                        onClick={() => setActiveTab(tab.id)}
-                        className={
-                            tabBaseClass +
-                            ' ' +
-                            (activeTab === tab.id ? 'bg-bg-2 text-text-primary' : 'bg-transparent text-text-tertiary')
-                        }
-                    >
-                        {tab.label}
-                    </button>
-                ))}
-            </div>
+            <ReportTabBar activeTab={activeTab} onChange={setActiveTab} />
 
-            {activeTab === 'overview' && <OverviewTab />}
+            {isProcessing && activeTab === 'overview' && <OverviewTabSkeleton />}
 
-            {activeTab === 'analysis' && (
+            {isProcessing && activeTab === 'analysis' && <AnalysisTab isPending={true} isError={false} />}
+
+            {!isProcessing && activeTab === 'overview' && <OverviewTab />}
+
+            {!isProcessing && activeTab === 'analysis' && (
                 <AnalysisTab
                     analysis={analysisQuery.data}
                     isPending={analysisQuery.isPending}
