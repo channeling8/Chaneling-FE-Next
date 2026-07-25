@@ -1,16 +1,17 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 import { useAuthStore } from '@/stores/authStore'
 import { useLayoutStore } from '@/stores/layoutStore'
 import Sidebar from '@/components/layout/Sidebar'
 import SidebarSkeleton from '@/components/layout/SidebarSkeleton'
-import DashboardLoadingView from '@/components/dashboard/DashboardLoadingView'
 import GlobalReportProgress from '@/components/report/GlobalReportProgress'
+import ProtectedPageLoadingView from '@/components/layout/ProtectedPageLoadingView'
 
 export default function ProtectedLayout({ children }: { children: React.ReactNode }) {
     const router = useRouter()
+    const pathname = usePathname()
     const hasHydrated = useAuthStore((state) => state.hasHydrated)
     const isAuth = useAuthStore((state) => state.isAuth)
 
@@ -23,11 +24,13 @@ export default function ProtectedLayout({ children }: { children: React.ReactNod
     }, [hasHydrated, isAuth, router])
 
     if (!hasHydrated) {
+        const shouldShowSidebar = pathname !== '/onboarding'
+
         return (
             <div className="flex h-screen w-full bg-bg-0">
-                <SidebarSkeleton />
+                {shouldShowSidebar && <SidebarSkeleton />}
                 <div className="min-w-0 flex-1">
-                    <DashboardLoadingView />
+                    <ProtectedPageLoadingView pathname={pathname} />
                 </div>
             </div>
         )
