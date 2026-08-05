@@ -7,17 +7,13 @@ export interface SearchBarProps extends Omit<InputHTMLAttributes<HTMLInputElemen
     value?: string
     onChange?: (value: string) => void
     isError?: boolean
-    onClear?: () => void
-    sizeVariant?: 'mobile' | 'tablet' | 'desktop'
 }
 
 export default function SearchBar({
     value: controlledValue,
     onChange,
     isError = false,
-    onClear,
     placeholder = '해당 영상 제목을 입력해주세요',
-    sizeVariant = 'mobile',
     id: externalId,
     ...rest
 }: SearchBarProps) {

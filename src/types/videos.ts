@@ -26,7 +26,7 @@ export type VideoReportListResponse = {
 }
 
 type Report = {
-    reportId: 0
+    reportId: number
     createdAt: string
     startDate: string
     endDate: string

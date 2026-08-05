@@ -1,3 +1,5 @@
+import Image from 'next/image'
+
 interface VideoCardProps {
     title?: string
     leftside?: string
@@ -25,11 +27,9 @@ export default function VideoCard({
             onClick={onClick}
         >
             {imageUrl ? (
-                <img
-                    src={imageUrl}
-                    alt={title ?? '영상 썸네일'}
-                    className="block h-46 w-full rounded-t-[20px] object-cover"
-                />
+                <div className="relative overflow-hidden h-46 w-full rounded-t-[20px] block ">
+                    <Image src={imageUrl} fill alt={title ?? '영상 썸네일'} className="object-cover" />
+                </div>
             ) : (
                 <div className="h-46 w-full rounded-t-[20px] bg-bg-1" />
             )}

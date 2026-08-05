@@ -1,4 +1,4 @@
-import { SkeletonBase } from '@/components/skeletonbase'
+import { SkeletonBase } from '@/components/Skeletonbase'
 
 function SectionTitleSkeleton({ width }: { width: string }) {
     return <SkeletonBase sizeConfig={`h-6 ${width}`} />

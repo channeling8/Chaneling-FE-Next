@@ -1,4 +1,5 @@
 'use client'
+import Image from 'next/image'
 import Back from '@/assets/icons/back.svg'
 import Bin from '@/assets/icons/bin.svg'
 import Plus from '@/assets/icons/plus.svg'
@@ -77,11 +78,14 @@ export default function ReportList() {
                 {/* 영상 정보  */}
                 {videoInfo && (
                     <div className="flex gap-4 flex-col tablet:flex-row">
-                        <img
-                            className="w-82 h-46 tablet:w-59.25 tablet:h-33.25 desktop:w-79 desktop:h-44.5 rounded-[20px] object-cover"
-                            src={videoInfo?.videoThumbnailUrl}
-                            alt={videoInfo?.videoTitle ?? '영상 썸네일'}
-                        ></img>
+                        <div className="relative overflow-hidden w-82 h-46 tablet:w-59.25 tablet:h-33.25 desktop:w-79 desktop:h-44.5 rounded-[20px] ">
+                            <Image
+                                fill
+                                className="object-cover"
+                                src={videoInfo?.videoThumbnailUrl}
+                                alt={videoInfo?.videoTitle ?? '영상 썸네일'}
+                            />
+                        </div>
                         <div className="flex flex-col gap-1 justify-start items-start">
                             <div className="px-2 py-1 rounded-[20px] bg-bg-2 font-caption-12m desktop:font-caption-14m text-text-primary">
                                 {videoInfo.videoType == 'LONG' ? 'Long-Form' : 'Short-Form'}

@@ -6,7 +6,7 @@ import { changeIdeaBookmark, getIdeaDetail } from '@/api/ideas'
 import type { IdeaDetail } from '@/api/ideas'
 import PageContent from '@/components/layout/PageContent'
 import Scroll from '@/components/Scroll'
-import { SkeletonBase } from '@/components/skeletonbase'
+import { SkeletonBase } from '@/components/Skeletonbase'
 import { useIdeasStore } from '@/stores/ideasStore'
 import IdeaDetailContent from './_components/IdeaDetailContent'
 import IdeaDetailHeader from './_components/IdeaDetailHeader'
@@ -60,9 +60,7 @@ export default function IdeaDetailPage() {
 
                     {(!isValidIdeaId || ideaQuery.isError) && (
                         <div className="flex flex-col items-start gap-3">
-                            <p className="font-body-14r text-text-secondary">
-                                아이디어 상세를 불러오지 못했습니다.
-                            </p>
+                            <p className="font-body-14r text-text-secondary">아이디어 상세를 불러오지 못했습니다.</p>
                             {ideaQuery.isError && (
                                 <button
                                     type="button"

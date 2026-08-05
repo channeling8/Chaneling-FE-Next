@@ -1,7 +1,7 @@
 interface EvaluationCardProps {
     type: 'view' | 'likes' | 'comments' | 'concept-consistency' | 'SEO' | 'revisit-rate'
-    score: number
-    average: number
+    score: string
+    average?: number
 }
 
 const CardTitle = {
@@ -24,19 +24,21 @@ const CardUnit = {
 
 export default function EvaluationCard({ type, score, average }: EvaluationCardProps) {
     return (
-        <div className="p-4 rounded-[20px] bg-bg-1 flex flex-col gap-2">
+        <div className="p-4 rounded-[20px] bg-bg-1 flex flex-col gap-2 h-32.25 desktop:h-33.75">
             <p className="font-body-14m text-text-secondary">{CardTitle[type]}</p>
             <div className="flex">
                 <p className="font-title-30r text-text-primary">{score}</p>
                 <p className="font-title-30r text-text-secondary">{CardUnit[type]}</p>
             </div>
-            <div className="flex gap-2">
-                <p className="font-caption-12r text-text-tertiary">평균</p>
-                <p className="font-caption-12m text-text-tertiary">
-                    {average}
-                    {CardUnit[type]}
-                </p>
-            </div>
+            {average && (
+                <div className="flex gap-2">
+                    <p className="font-caption-12r text-text-tertiary">평균</p>
+                    <p className="font-caption-12m text-text-tertiary">
+                        {average}
+                        {CardUnit[type]}
+                    </p>
+                </div>
+            )}
         </div>
     )
 }

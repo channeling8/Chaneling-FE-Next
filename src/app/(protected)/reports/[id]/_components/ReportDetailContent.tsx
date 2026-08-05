@@ -3,7 +3,7 @@
 import { getVideoInfo } from '@/api/video'
 import PageContent from '@/components/layout/PageContent'
 import Scroll from '@/components/Scroll'
-import { SkeletonBase } from '@/components/skeletonbase'
+import { SkeletonBase } from '@/components/Skeletonbase'
 import { useReportProgress } from '@/hooks/useReportProgress'
 import { useReportGenerationStore } from '@/stores/reportGenerationStore'
 import { useVideoStore } from '@/stores/videoStore'
@@ -41,7 +41,7 @@ function VideoInfo({ video }: { video: VideoInfoResponse }) {
             <div
                 role="img"
                 aria-label={`${video.videoTitle} 썸네일`}
-                className="aspect-[328/184] w-full rounded-[20px] bg-bg-3 bg-cover bg-center tablet:aspect-auto tablet:h-33.25 tablet:w-59.25 desktop:h-44.5 desktop:w-79"
+                className="aspect-328/184 w-full rounded-[20px] bg-bg-3 bg-cover bg-center tablet:aspect-auto tablet:h-33.25 tablet:w-59.25 desktop:h-44.5 desktop:w-79"
                 style={{ backgroundImage: `url(${video.videoThumbnailUrl})` }}
             />
             <div className="flex min-w-0 flex-1 flex-col items-start justify-start gap-1">
@@ -75,14 +75,7 @@ export default function ReportDetailContent({ reportId, videoId: videoIdFromUrl 
         queryFn: () => getVideoInfo(videoId),
         enabled: isValidVideoId,
     })
-    const {
-        currentStep,
-        isCompleted,
-        isFailed,
-        isProcessing,
-        isStatusError,
-        refetch,
-    } = useReportProgress(reportId)
+    const { currentStep, isCompleted, isFailed, isProcessing, isStatusError, refetch } = useReportProgress(reportId)
 
     useEffect(() => {
         if (isProcessing && isValidVideoId) {

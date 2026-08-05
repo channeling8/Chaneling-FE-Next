@@ -1,6 +1,6 @@
 import api from '@/lib/axios'
 import type { ApiResponse } from '@/types'
-import { CategoryLeadersVideoResponse } from '@/types/reports'
+import { CategoryLeadersVideoResponse, ReportOverviewresponse, ReportSummaryResponse } from '@/types/reports'
 
 export interface RetentionPoint {
     time: string
@@ -116,5 +116,15 @@ function normalizeAnalysisField(value: unknown) {
 
 export async function getCategoryLeadersVideo(): Promise<CategoryLeadersVideoResponse> {
     const { data } = await api.get<ApiResponse<CategoryLeadersVideoResponse>>(`/recommend-reports/leaders`)
+    return data.result
+}
+
+export async function getReportOVerview(reportId: number): Promise<ReportOverviewresponse> {
+    const { data } = await api.get<ApiResponse<ReportOverviewresponse>>(`/reports/${reportId}/overviews`)
+    return data.result
+}
+
+export async function getReportSummary(reportId: number): Promise<ReportSummaryResponse> {
+    const { data } = await api.get<ApiResponse<ReportSummaryResponse>>(`/reports/${reportId}/summary`)
     return data.result
 }

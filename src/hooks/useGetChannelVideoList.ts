@@ -52,7 +52,7 @@ export function useGetChannelVideoList({
         }
 
         void fetchVideos()
-    }, [hasHydrated, channelId, type, page, size])
+    }, [hasHydrated, channelId, type, sort, page, size])
 
     return {
         data,

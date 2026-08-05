@@ -4,7 +4,7 @@ import Line from '@/components/Line'
 import ReportDetailSkeleton from '@/app/(protected)/reports/_components/ReportDetailSkeleton'
 import SettingsPageSkeleton from '@/app/(protected)/settings/_components/SettingsPageSkeleton'
 import Scroll from '@/components/Scroll'
-import { SkeletonBase } from '@/components/skeletonbase'
+import { SkeletonBase } from '@/components/Skeletonbase'
 import Header from './Header'
 import PageContent from './PageContent'
 
@@ -22,13 +22,7 @@ function CardGridSkeleton({ count = 4 }: { count?: number }) {
     )
 }
 
-function DetailPageSkeleton({
-    children,
-    title,
-}: {
-    children: React.ReactNode
-    title: string
-}) {
+function DetailPageSkeleton({ children, title }: { children: React.ReactNode; title: string }) {
     return (
         <div className="flex h-full w-full flex-col bg-bg-0">
             <Scroll as="main" className="flex-1">

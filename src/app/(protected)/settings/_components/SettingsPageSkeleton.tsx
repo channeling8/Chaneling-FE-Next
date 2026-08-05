@@ -1,6 +1,6 @@
 import Line from '@/components/Line'
 import PageContent from '@/components/layout/PageContent'
-import { SkeletonBase } from '@/components/skeletonbase'
+import { SkeletonBase } from '@/components/Skeletonbase'
 
 function SectionLine() {
     return <div className="h-px w-full bg-border-default" />

@@ -2,8 +2,6 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import FaqArrowIcon from '@/assets/icons/faq_arrow.svg'
-import GoogleIcon from '@/assets/icons/google.svg'
 import LikeIcon from '@/assets/icons/like.svg'
 
 export default function ReportPage() {
@@ -16,11 +14,29 @@ export default function ReportPage() {
             title: '긍정적 댓글 분석 (100개)',
             desc: '시청자들은 화자의 솔직한 태도와 진정성에 큰 호감을 느꼈습니다. 특히 "힐링된다", "위로받았다"는 키워드가 상위권에 랭크되었습니다.',
             comments: [
-                { id: 1, text: '영상 정말 잘 봤습니다! 평소 궁금했던 주제인데 설명이 깔끔해서 단번에 이해됐어요. 앞으로도 유익한 영상 많이 올려주세요. 항~상 응원하며 다음 영상도 즐겁게 기다리고 있겠습니다!', nickname: '닉네임', time: 'n시간 전', likes: 999 },
-                { id: 2, text: '영상 정말 잘 봤습니다! 평소 궁금했던 주제인데 설명이 깔끔해서 단번에 이해됐어요. 앞으로도 유익한 영상 많이 올려주세요. 항~상 응원하며 다음 영상도 즐겁게 기다리고 있겠습니다!', nickname: '닉네임', time: 'n일 전', likes: 999 },
-                { id: 3, text: '영상 정말 잘 봤습니다! 평소 궁금했던 주제인데 설명이 깔끔해서 단번에 이해됐어요. 앞으로도 유익한 영상 많이 올려주세요. 항~상 응원하며 다음 영상도 즐겁게 기다리고 있겠습니다!', nickname: '닉네임', time: 'n달 전', likes: 999 }
-            ]
-        }
+                {
+                    id: 1,
+                    text: '영상 정말 잘 봤습니다! 평소 궁금했던 주제인데 설명이 깔끔해서 단번에 이해됐어요. 앞으로도 유익한 영상 많이 올려주세요. 항~상 응원하며 다음 영상도 즐겁게 기다리고 있겠습니다!',
+                    nickname: '닉네임',
+                    time: 'n시간 전',
+                    likes: 999,
+                },
+                {
+                    id: 2,
+                    text: '영상 정말 잘 봤습니다! 평소 궁금했던 주제인데 설명이 깔끔해서 단번에 이해됐어요. 앞으로도 유익한 영상 많이 올려주세요. 항~상 응원하며 다음 영상도 즐겁게 기다리고 있겠습니다!',
+                    nickname: '닉네임',
+                    time: 'n일 전',
+                    likes: 999,
+                },
+                {
+                    id: 3,
+                    text: '영상 정말 잘 봤습니다! 평소 궁금했던 주제인데 설명이 깔끔해서 단번에 이해됐어요. 앞으로도 유익한 영상 많이 올려주세요. 항~상 응원하며 다음 영상도 즐겁게 기다리고 있겠습니다!',
+                    nickname: '닉네임',
+                    time: 'n달 전',
+                    likes: 999,
+                },
+            ],
+        },
     }
 
     return (
@@ -28,13 +44,18 @@ export default function ReportPage() {
             {/* 상단 헤더 */}
             <header className="h-[72px] flex items-center justify-between bg-[#141415] sticky top-0 z-40 tablet:px-16 max-w-[1440px] w-full mx-auto">
                 <div className="flex items-center gap-3">
-                    <Link 
+                    <Link
                         href="/landing"
                         className="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-text-primary transition-colors cursor-pointer"
                         aria-label="이전 페이지로 이동"
                     >
-                        <svg className="w-5 h-5 rotate-180" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z" fill="currentColor"/>
+                        <svg
+                            className="w-5 h-5 rotate-180"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z" fill="currentColor" />
                         </svg>
                     </Link>
                     <span className="font-title-20sb text-text-primary">상세 분석 리포트</span>
@@ -46,13 +67,14 @@ export default function ReportPage() {
                 {/* 1. 영상 메타 정보 영역 */}
                 <div className="flex flex-col gap-4">
                     <div className="flex flex-col tablet:flex-row gap-4">
-                        <div 
+                        <div
                             className="w-full tablet:w-[316px] h-[178px] rounded-[20px] shrink-0 relative overflow-hidden"
                             style={{
-                                backgroundImage: 'linear-gradient(45deg, #EAEAEA 25%, transparent 25%), linear-gradient(-45deg, #EAEAEA 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #EAEAEA 75%), linear-gradient(-45deg, transparent 75%, #EAEAEA 75%)',
+                                backgroundImage:
+                                    'linear-gradient(45deg, #EAEAEA 25%, transparent 25%), linear-gradient(-45deg, #EAEAEA 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #EAEAEA 75%), linear-gradient(-45deg, transparent 75%, #EAEAEA 75%)',
                                 backgroundSize: '16px 16px',
                                 backgroundPosition: '0 0, 0 8px, 8px -8px, -8px 0px',
-                                backgroundColor: '#FFFFFF'
+                                backgroundColor: '#FFFFFF',
                             }}
                         />
 
@@ -60,9 +82,7 @@ export default function ReportPage() {
                             <div className="inline-block self-start px-2 py-1 bg-gray-20 rounded-full">
                                 <span className="font-body-14m text-gray-95">Long-Form</span>
                             </div>
-                            <h3 className="font-title-20sb text-text-primary">
-                                주말 아침 루틴 | 느긋한 브런치 만들기
-                            </h3>
+                            <h3 className="font-title-20sb text-text-primary">주말 아침 루틴 | 느긋한 브런치 만들기</h3>
                             <div className="flex flex-col gap-1 font-body-16r text-text-secondary">
                                 <span>업데이트: 2025년 6월 21일 (오전 03:39)</span>
                                 <span className="flex items-center gap-1">
@@ -235,7 +255,9 @@ export default function ReportPage() {
                                     <div className="flex gap-[5px] items-start pb-4">
                                         <span className="text-[18px] font-normal text-text-brand shrink-0">nn:nn</span>
                                         <div className="flex flex-col gap-1">
-                                            <span className="text-[18px] font-medium text-text-primary">소제목소제목소제목소제목소제목소제목소제목소제목소제목소제목</span>
+                                            <span className="text-[18px] font-medium text-text-primary">
+                                                소제목소제목소제목소제목소제목소제목소제목소제목소제목소제목
+                                            </span>
                                             <span className="font-body-16r text-text-secondary">
                                                 캡션입니다.캡션입니다.캡션입니다.캡션입니다.캡션입니다.캡션입니다.캡션입니다.캡션입니다.
                                             </span>
@@ -246,9 +268,7 @@ export default function ReportPage() {
                                         <span className="text-[18px] font-normal text-text-brand shrink-0">nn:nn</span>
                                         <div className="flex flex-col gap-1">
                                             <span className="text-[18px] font-medium text-text-primary">소제목</span>
-                                            <span className="font-body-16r text-text-secondary">
-                                                캡션입니다.
-                                            </span>
+                                            <span className="font-body-16r text-text-secondary">캡션입니다.</span>
                                         </div>
                                     </div>
                                     {/* 스크립트 3 */}
@@ -256,9 +276,7 @@ export default function ReportPage() {
                                         <span className="text-[18px] font-normal text-text-brand shrink-0">nn:nn</span>
                                         <div className="flex flex-col gap-1">
                                             <span className="text-[18px] font-medium text-text-primary">소제목</span>
-                                            <span className="font-body-16r text-text-secondary">
-                                                캡션입니다.
-                                            </span>
+                                            <span className="font-body-16r text-text-secondary">캡션입니다.</span>
                                         </div>
                                     </div>
                                     {/* 전체 보기 */}
@@ -277,21 +295,64 @@ export default function ReportPage() {
                                         {/* 도넛 차트 */}
                                         <div className="w-full tablet:w-[352px] flex flex-col items-center justify-center shrink-0 relative">
                                             <div className="relative w-88 h-88 flex items-center justify-center">
-                                                <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                                                <svg
+                                                    className="w-full h-full transform -rotate-90"
+                                                    viewBox="0 0 100 100"
+                                                >
                                                     {/* 기타 (10%) - 회색 */}
-                                                    <circle cx="50" cy="50" r="40" fill="transparent" stroke="#37363A" strokeWidth="12" strokeDasharray="251.2" strokeDashoffset="0" />
+                                                    <circle
+                                                        cx="50"
+                                                        cy="50"
+                                                        r="40"
+                                                        fill="transparent"
+                                                        stroke="#37363A"
+                                                        strokeWidth="12"
+                                                        strokeDasharray="251.2"
+                                                        strokeDashoffset="0"
+                                                    />
                                                     {/* 부정 (10%) - 빨강 */}
-                                                    <circle cx="50" cy="50" r="40" fill="transparent" stroke="#F50019" strokeWidth="12" strokeDasharray="251.2" strokeDashoffset="25.12" />
+                                                    <circle
+                                                        cx="50"
+                                                        cy="50"
+                                                        r="40"
+                                                        fill="transparent"
+                                                        stroke="#F50019"
+                                                        strokeWidth="12"
+                                                        strokeDasharray="251.2"
+                                                        strokeDashoffset="25.12"
+                                                    />
                                                     {/* 중립 (20%) - 파랑 */}
-                                                    <circle cx="50" cy="50" r="40" fill="transparent" stroke="#60A5FA" strokeWidth="12" strokeDasharray="251.2" strokeDashoffset="50.24" />
+                                                    <circle
+                                                        cx="50"
+                                                        cy="50"
+                                                        r="40"
+                                                        fill="transparent"
+                                                        stroke="#60A5FA"
+                                                        strokeWidth="12"
+                                                        strokeDasharray="251.2"
+                                                        strokeDashoffset="50.24"
+                                                    />
                                                     {/* 긍정 (60%) - 초록 */}
-                                                    <circle cx="50" cy="50" r="40" fill="transparent" stroke="#4ADE80" strokeWidth="12" strokeDasharray="251.2" strokeDashoffset="100.48" />
+                                                    <circle
+                                                        cx="50"
+                                                        cy="50"
+                                                        r="40"
+                                                        fill="transparent"
+                                                        stroke="#4ADE80"
+                                                        strokeWidth="12"
+                                                        strokeDasharray="251.2"
+                                                        strokeDashoffset="100.48"
+                                                    />
                                                 </svg>
                                                 <div className="absolute flex flex-col items-center justify-center text-center">
                                                     <span className="font-body-14m text-text-secondary">총 댓글</span>
                                                     <div className="flex items-baseline">
-                                                        <span className="text-[32px] font-normal text-text-primary">8</span>
-                                                        <span className="text-[32px] font-normal text-text-secondary">천</span>
+                                                        <span className="text-[32px] font-normal text-text-primary">
+                                                            8
+                                                        </span>
+                                                        <span className="text-[32px] font-normal text-text-secondary">
+                                                            천
+                                                        </span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -354,10 +415,26 @@ export default function ReportPage() {
                                             {/* 감정 해설 */}
                                             {(() => {
                                                 const currentSentiment = {
-                                                    positive: { title: '긍정적 댓글 분석', count: '(100개)', desc: '시청자들은 화자의 솔직한 태도와 진정성에 큰 호감을 느꼈습니다. 특히 "힐링된다", "위로받았다"는 키워드가 상위권에 랭크되었습니다.' },
-                                                    negative: { title: '부정적 댓글 분석', count: '(15개)', desc: '일부 슬로우 모션 구간의 편집 속도가 너무 느려 다소 지루하다는 반응이 있었습니다. 전체적인 컷 편집 템포를 조절할 필요가 있습니다.' },
-                                                    neutral: { title: '중립적 댓글 분석', count: '(45개)', desc: '영상에 등장한 인테리어 소품, 식기류 브랜드 및 조리 도구 정보와 배경 음악의 트랙 정보를 묻는 질문 중심의 댓글이 주를 이루고 있습니다.' },
-                                                    suggestion: { title: '조언 댓글 분석', count: '(20개)', desc: '조리 과정을 상세히 보고 싶어하는 시청자들을 위해 카메라 앵글을 위에서 아래로 비추는 탑뷰(Top-down) 앵글을 추가해 달라는 의견이 많았습니다.' }
+                                                    positive: {
+                                                        title: '긍정적 댓글 분석',
+                                                        count: '(100개)',
+                                                        desc: '시청자들은 화자의 솔직한 태도와 진정성에 큰 호감을 느꼈습니다. 특히 "힐링된다", "위로받았다"는 키워드가 상위권에 랭크되었습니다.',
+                                                    },
+                                                    negative: {
+                                                        title: '부정적 댓글 분석',
+                                                        count: '(15개)',
+                                                        desc: '일부 슬로우 모션 구간의 편집 속도가 너무 느려 다소 지루하다는 반응이 있었습니다. 전체적인 컷 편집 템포를 조절할 필요가 있습니다.',
+                                                    },
+                                                    neutral: {
+                                                        title: '중립적 댓글 분석',
+                                                        count: '(45개)',
+                                                        desc: '영상에 등장한 인테리어 소품, 식기류 브랜드 및 조리 도구 정보와 배경 음악의 트랙 정보를 묻는 질문 중심의 댓글이 주를 이루고 있습니다.',
+                                                    },
+                                                    suggestion: {
+                                                        title: '조언 댓글 분석',
+                                                        count: '(20개)',
+                                                        desc: '조리 과정을 상세히 보고 싶어하는 시청자들을 위해 카메라 앵글을 위에서 아래로 비추는 탑뷰(Top-down) 앵글을 추가해 달라는 의견이 많았습니다.',
+                                                    },
                                                 }[sentimentTab]
 
                                                 return (
@@ -385,19 +462,19 @@ export default function ReportPage() {
                                         <div className="flex flex-col divide-y divide-white/5">
                                             {sentimentInfo.positive.comments.map((comment) => (
                                                 <div key={comment.id} className="py-4 flex flex-col gap-3 first:pt-0">
-                                                    <p className="font-body-16r text-text-primary">
-                                                        {comment.text}
-                                                    </p>
+                                                    <p className="font-body-16r text-text-primary">{comment.text}</p>
                                                     <div className="flex items-center justify-between font-body-14r text-text-secondary">
                                                         <div className="flex items-center gap-1">
                                                             <div
-                                                            className="w-6 h-6 rounded-full shrink-0"
-                                                            style={{
-                                                                backgroundImage: 'linear-gradient(45deg, #EAEAEA 25%, transparent 25%), linear-gradient(-45deg, #EAEAEA 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #EAEAEA 75%), linear-gradient(-45deg, transparent 75%, #EAEAEA 75%)',
-                                                                backgroundSize: '8px 8px',
-                                                                backgroundPosition: '0 0, 0 4px, 4px -4px, -4px 0px',
-                                                                backgroundColor: '#FFFFFF'
-                                                            }}
+                                                                className="w-6 h-6 rounded-full shrink-0"
+                                                                style={{
+                                                                    backgroundImage:
+                                                                        'linear-gradient(45deg, #EAEAEA 25%, transparent 25%), linear-gradient(-45deg, #EAEAEA 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #EAEAEA 75%), linear-gradient(-45deg, transparent 75%, #EAEAEA 75%)',
+                                                                    backgroundSize: '8px 8px',
+                                                                    backgroundPosition:
+                                                                        '0 0, 0 4px, 4px -4px, -4px 0px',
+                                                                    backgroundColor: '#FFFFFF',
+                                                                }}
                                                             />
                                                             <span>{comment.nickname}</span>
                                                             <span>{comment.time}</span>
@@ -432,7 +509,11 @@ export default function ReportPage() {
 
                                     {/* 이탈 분석 그래프 */}
                                     <div className="w-full h-[205px] relative">
-                                        <svg className="w-full h-full" viewBox="0 0 1272 160" preserveAspectRatio="none">
+                                        <svg
+                                            className="w-full h-full"
+                                            viewBox="0 0 1272 160"
+                                            preserveAspectRatio="none"
+                                        >
                                             {/* 그라데이션 정의 */}
                                             <defs>
                                                 <linearGradient id="area-grad" x1="0" y1="0" x2="0" y2="1">
@@ -442,14 +523,57 @@ export default function ReportPage() {
                                             </defs>
 
                                             {/* 이탈 하이라이트 세로 구역 (0:15 ~ 0:45 부근) */}
-                                            <rect x="90" y="0" width="100" height="160" fill="rgba(233, 73, 90, 0.08)" />
-                                            <line x1="90" y1="0" x2="90" y2="160" stroke="#E9495A" strokeWidth="1" strokeDasharray="3 3" />
-                                            <line x1="190" y1="0" x2="190" y2="160" stroke="#E9495A" strokeWidth="1" strokeDasharray="3 3" />
+                                            <rect
+                                                x="90"
+                                                y="0"
+                                                width="100"
+                                                height="160"
+                                                fill="rgba(233, 73, 90, 0.08)"
+                                            />
+                                            <line
+                                                x1="90"
+                                                y1="0"
+                                                x2="90"
+                                                y2="160"
+                                                stroke="#E9495A"
+                                                strokeWidth="1"
+                                                strokeDasharray="3 3"
+                                            />
+                                            <line
+                                                x1="190"
+                                                y1="0"
+                                                x2="190"
+                                                y2="160"
+                                                stroke="#E9495A"
+                                                strokeWidth="1"
+                                                strokeDasharray="3 3"
+                                            />
 
                                             {/* 배경 보조 가로선 */}
-                                            <line x1="0" y1="40" x2="1272" y2="40" stroke="white" strokeOpacity={0.05} />
-                                            <line x1="0" y1="80" x2="1272" y2="80" stroke="white" strokeOpacity={0.05} />
-                                            <line x1="0" y1="120" x2="1272" y2="120" stroke="white" strokeOpacity={0.05} />
+                                            <line
+                                                x1="0"
+                                                y1="40"
+                                                x2="1272"
+                                                y2="40"
+                                                stroke="white"
+                                                strokeOpacity={0.05}
+                                            />
+                                            <line
+                                                x1="0"
+                                                y1="80"
+                                                x2="1272"
+                                                y2="80"
+                                                stroke="white"
+                                                strokeOpacity={0.05}
+                                            />
+                                            <line
+                                                x1="0"
+                                                y1="120"
+                                                x2="1272"
+                                                y2="120"
+                                                stroke="white"
+                                                strokeOpacity={0.05}
+                                            />
 
                                             {/* 차트 영역 채우기 (Area) */}
                                             <path
@@ -486,8 +610,14 @@ export default function ReportPage() {
                                             <div className="flex flex-col gap-2">
                                                 <span className="font-body-16sb text-text-secondary">이탈 원인</span>
                                                 <div className="flex flex-col gap-1 text-text-primary font-body-14r">
-                                                    <p>• 예상 뷰어 수치: 해당 구간에서 시청자가 지루함을 느낄 수 있는 반복적인 내용이 30초 이상 지속됨</p>
-                                                    <p>• 중복된 내용: 앞서 1분 15초에 언급했던 내용과 유사한 주장이 반복되어 정보값이 낮아짐</p>
+                                                    <p>
+                                                        • 예상 뷰어 수치: 해당 구간에서 시청자가 지루함을 느낄 수 있는
+                                                        반복적인 내용이 30초 이상 지속됨
+                                                    </p>
+                                                    <p>
+                                                        • 중복된 내용: 앞서 1분 15초에 언급했던 내용과 유사한 주장이
+                                                        반복되어 정보값이 낮아짐
+                                                    </p>
                                                 </div>
                                             </div>
 
@@ -497,8 +627,14 @@ export default function ReportPage() {
                                             <div className="flex flex-col gap-1">
                                                 <span className="font-body-16sb text-text-secondary">개선 방안</span>
                                                 <div className="flex flex-col gap-1 text-text-primary font-body-14r">
-                                                    <p>• 진행 속도 조절: 2분 6초부터 2분 30초까지의 부연 설명 구간을 컷편집하여 10초 이내로 단축</p>
-                                                    <p>• 그래픽 활용: 설명이 길어지는 부분에 핵심 키워드 자막이나 자료 화면을 삽입하여 시각적 변화 주기</p>
+                                                    <p>
+                                                        • 진행 속도 조절: 2분 6초부터 2분 30초까지의 부연 설명 구간을
+                                                        컷편집하여 10초 이내로 단축
+                                                    </p>
+                                                    <p>
+                                                        • 그래픽 활용: 설명이 길어지는 부분에 핵심 키워드 자막이나 자료
+                                                        화면을 삽입하여 시각적 변화 주기
+                                                    </p>
                                                 </div>
                                             </div>
 
@@ -508,7 +644,9 @@ export default function ReportPage() {
                                             <div className="flex flex-col gap-1">
                                                 <span className="font-body-16sb text-text-secondary">기대 효과</span>
                                                 <p className="text-text-primary font-body-14r">
-                                                    위 개선사항 적용 시, 해당 구간 이탈율을 약 40% 감소시킬 수 있으며, 전체 영상 평균 시청 시간을 1분 30초 이상 증가시킬 수 있을 것으로 예상됩니다.
+                                                    위 개선사항 적용 시, 해당 구간 이탈율을 약 40% 감소시킬 수 있으며,
+                                                    전체 영상 평균 시청 시간을 1분 30초 이상 증가시킬 수 있을 것으로
+                                                    예상됩니다.
                                                 </p>
                                             </div>
                                         </div>
@@ -540,18 +678,22 @@ export default function ReportPage() {
                                                 <div className="flex">
                                                     <span className="font-body-16r mr-2">•</span>
                                                     <p className="font-body-16sb text-text-primary mr-1">문제:</p>
-                                                    <p className="font-body-16r">제목이 너무 평범하고 클릭을 유도하는 요소 부족</p>
+                                                    <p className="font-body-16r">
+                                                        제목이 너무 평범하고 클릭을 유도하는 요소 부족
+                                                    </p>
                                                 </div>
                                                 <div className="flex">
                                                     <span className="font-body-16r mr-2">•</span>
                                                     <p className="font-body-16sb text-text-primary mr-1">개선:</p>
-                                                    <p className="font-body-16r">감정적 트리거와 호기심을 자극하는 키워드 추가</p>
+                                                    <p className="font-body-16r">
+                                                        감정적 트리거와 호기심을 자극하는 키워드 추가
+                                                    </p>
                                                 </div>
                                             </div>
                                             <p className="font-body-16r text-text-secondary flex ml-6">
                                                 <span>•</span>
                                                 <span className="ml-2">
-                                                    예: “20대 혼자 사는 법 | 진짜 현실적인 월세 절약 팁 3가지"
+                                                    {' 예: “20대 혼자 사는 법 | 진짜 현실적인 월세 절약 팁 3가지"'}
                                                 </span>
                                             </p>
                                         </div>
@@ -589,7 +731,9 @@ export default function ReportPage() {
                                             <p className="font-body-16r text-text-secondary flex ml-6">
                                                 <span>•</span>
                                                 <span className="ml-2">
-                                                    콜투액션("좋아요·구독", "댓글로 여러분의 생활 팁도 공유해주세요!")
+                                                    {
+                                                        '콜투액션("좋아요·구독", "댓글로 여러분의 생활 팁도 공유해주세요!")'
+                                                    }
                                                 </span>
                                             </p>
                                         </div>
@@ -615,7 +759,9 @@ export default function ReportPage() {
                                                 <div className="flex">
                                                     <span className="font-body-16r mr-2">•</span>
                                                     <p className="font-body-16sb text-text-primary mr-1">추가 제안:</p>
-                                                    <p className="font-body-16r">#20대일상 #직장인브이로그 #혼자사는법 #생활팁 #일상루틴</p>
+                                                    <p className="font-body-16r">
+                                                        #20대일상 #직장인브이로그 #혼자사는법 #생활팁 #일상루틴
+                                                    </p>
                                                 </div>
                                             </div>
                                         </div>
@@ -629,7 +775,7 @@ export default function ReportPage() {
                                         <ul className="list-disc list-inside flex flex-col gap-1 font-body-16r text-text-primary">
                                             <p>• 챕터 타임스탬프 삽입</p>
                                             <p>• 카드·엔드스크린(플레이리스트·구독 유도)</p>
-                                            <p>• 재생목록 섹션 생성("거리 인터뷰 시리즈")</p>
+                                            <p>{'• 재생목록 섹션 생성("거리 인터뷰 시리즈")'}</p>
                                             <p>• 자동 자막(.srt) 편집 → 접근성·SEO 강화</p>
                                             <p>• 트랜스크립트 자동 분석 → 키워드 요약, 커뮤니티/블로그 활용</p>
                                         </ul>

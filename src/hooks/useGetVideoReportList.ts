@@ -1,8 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-
-import { VideoReportListRequest, VideoReportListResponse } from '@/types/videos'
+import { VideoReportListRequest } from '@/types/videos'
 
 import { getVideoReportList } from '@/api/video'
 import { useQuery } from '@tanstack/react-query'

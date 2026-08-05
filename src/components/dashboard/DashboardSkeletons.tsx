@@ -1,4 +1,4 @@
-import { SkeletonBase } from '@/components/skeletonbase'
+import { SkeletonBase } from '@/components/Skeletonbase'
 
 export function DashboardDateSkeleton() {
     return (

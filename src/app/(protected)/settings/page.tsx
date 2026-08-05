@@ -170,7 +170,6 @@ export default function SettingsPage() {
                                     initialValue={channelTarget}
                                     maxLength={50}
                                     placeholder="더욱 최적화된 분석 및 제안을 위해 채널 타겟층을 입력해주세요"
-                                    fullWidth
                                     inputClassName="h-[88px] desktop:h-[100px]"
                                     onSave={handleSaveTarget}
                                 />
@@ -180,7 +179,6 @@ export default function SettingsPage() {
                                     maxLength={150}
                                     placeholder="더욱 최적화된 분석 및 제안을 위해 채널 컨셉을 입력해주세요"
                                     heightVariant="large"
-                                    fullWidth
                                     onSave={handleSaveConcept}
                                 />
                             </div>
