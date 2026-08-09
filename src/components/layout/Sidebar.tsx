@@ -3,6 +3,8 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { type ReactNode, useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
+import { getSubscriptionPage, type SubscriptionPlan } from '@/api/subscription'
 import DashboardIcon from '@/assets/icons/dashboard.svg'
 import FeedbackIcon from '@/assets/icons/feedback.svg'
 import IdeaIcon from '@/assets/icons/idea.svg'
@@ -24,6 +26,12 @@ interface SidebarItemProps {
     isDesktopCollapsed: boolean
     label: string
     onNavigate?: () => void
+}
+
+const planNameBySubscriptionPlan: Record<SubscriptionPlan, string> = {
+    FREE: 'Free',
+    BASIC: 'Creator',
+    ENTERPRISE: 'Pro',
 }
 
 function SidebarItem({
@@ -66,8 +74,18 @@ export default function Sidebar({ isOpen = true, onClose }: SidebarProps) {
     const pathname = usePathname()
     const [isDesktopCollapsed, setIsDesktopCollapsed] = useState(false)
     const user = useAuthStore((state) => state.user)
+    const subscriptionQuery = useQuery({
+        queryKey: ['subscription', 'me'],
+        queryFn: getSubscriptionPage,
+        enabled: pathname !== '/onboarding',
+        staleTime: 60_000,
+    })
     const channelName = user?.nickname?.trim() || '채널 정보'
-    const planName = 'Free'
+    const planName = subscriptionQuery.data
+        ? planNameBySubscriptionPlan[subscriptionQuery.data.plan]
+        : subscriptionQuery.isPending
+          ? '플랜 확인 중'
+          : '플랜 정보 없음'
 
     if (pathname === '/onboarding') return null
 

@@ -19,23 +19,32 @@ export interface ChannelDetail {
     concept: string | null
 }
 
+function normalizeChannelProfileField(value: string | null) {
+    if (value?.trim().toLowerCase() === 'default') return ''
+    return value ?? ''
+}
+
 export async function getChannel(channelId: number): Promise<ChannelDetail> {
     const { data } = await api.get<ApiResponse<ChannelDetail>>(`/channels/${channelId}`)
-    return data.result
+    return {
+        ...data.result,
+        target: normalizeChannelProfileField(data.result.target),
+        concept: normalizeChannelProfileField(data.result.concept),
+    }
 }
 
 export async function updateChannelTarget(channelId: number, target: string): Promise<string> {
     const { data } = await api.patch<ApiResponse<UpdateChannelTargetResult>>(`/channels/${channelId}/targets`, {
         target,
     })
-    return data.result.updatedTarget
+    return normalizeChannelProfileField(data.result.updatedTarget)
 }
 
 export async function updateChannelConcept(channelId: number, concept: string): Promise<string> {
     const { data } = await api.patch<ApiResponse<UpdateChannelConceptResult>>(`/channels/${channelId}/concepts`, {
         concept,
     })
-    return data.result.updatedConcept
+    return normalizeChannelProfileField(data.result.updatedConcept)
 }
 export async function getChannelVideoList({
     channelId,

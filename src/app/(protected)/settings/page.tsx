@@ -1,9 +1,10 @@
 'use client'
 
-import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
 import { getChannel, updateChannelConcept, updateChannelTarget, type ChannelDetail } from '@/api/channel'
 import { updateMemberAgreements, updateMemberProfileImage, type MemberAgreements } from '@/api/member'
+import { cancelSubscription, getSubscriptionPage, type SubscriptionPageData } from '@/api/subscription'
 import Scroll from '@/components/Scroll'
 import { Modal } from '@/components/Modal'
 import Header from '@/components/layout/Header'
@@ -31,6 +32,32 @@ export default function SettingsPage() {
         queryKey: ['channel', user?.channelId],
         queryFn: () => getChannel(user!.channelId),
         enabled: Boolean(user?.channelId),
+    })
+    const subscriptionQuery = useQuery({
+        queryKey: ['subscription', 'me'],
+        queryFn: getSubscriptionPage,
+        enabled: Boolean(user),
+    })
+    const cancelSubscriptionMutation = useMutation({
+        mutationFn: cancelSubscription,
+        onSuccess: ({ accessUntil }) => {
+            queryClient.setQueryData<SubscriptionPageData>(['subscription', 'me'], (current) =>
+                current
+                    ? {
+                          ...current,
+                          status: 'CANCEL_SCHEDULED',
+                          nextBillingDate: accessUntil,
+                          canCancel: false,
+                      }
+                    : current
+            )
+            setConfirmModal(null)
+            void queryClient.invalidateQueries({ queryKey: ['subscription', 'me'] })
+        },
+        onError: () => {
+            setConfirmModal(null)
+            setErrorMessage('구독을 해지하지 못했습니다. 잠시 후 다시 시도해주세요.')
+        },
     })
     const { isLoggingOut, logout } = useLogout()
     const { isWithdrawing, withdraw } = useWithdraw()
@@ -147,7 +174,7 @@ export default function SettingsPage() {
         <div className="flex h-full w-full flex-col bg-bg-0 desktop:pt-3">
             <Scroll as="main" className="flex-1">
                 <Header title="설정" showMenu={true} />
-                {!user || isChannelPending ? (
+                {!user || isChannelPending || subscriptionQuery.isPending ? (
                     <SettingsPageSkeleton />
                 ) : (
                     <PageContent className="flex flex-col gap-8 pb-8">
@@ -186,7 +213,11 @@ export default function SettingsPage() {
 
                         <Line variant="thick" />
 
-                        <PlanManagementSection onCancelPlan={() => setConfirmModal('cancelPlan')} />
+                        <PlanManagementSection
+                            subscription={subscriptionQuery.data}
+                            onCancelPlan={() => setConfirmModal('cancelPlan')}
+                            onRetry={() => void subscriptionQuery.refetch()}
+                        />
 
                         <Line variant="thick" />
 
@@ -272,8 +303,10 @@ export default function SettingsPage() {
                 title="정말 구독을 해지하시겠습니까?"
                 caption={'해지 시, 다음 결제일 전까지\n혜택을 이용하실 수 있습니다.'}
                 confirmLabel="해지"
+                pendingLabel="해지 중"
+                isPending={cancelSubscriptionMutation.isPending}
                 onClose={() => setConfirmModal(null)}
-                onConfirm={() => setConfirmModal(null)}
+                onConfirm={() => cancelSubscriptionMutation.mutate()}
             />
         </div>
     )
