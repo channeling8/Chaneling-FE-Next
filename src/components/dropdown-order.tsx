@@ -5,13 +5,16 @@ import Dropdown from '@/assets/icons/dropdown.svg'
 
 interface DropdownOrderProps {
     onChange?: (option: string) => void
+    options?: string[]
 }
 
-export default function DropdownOrder({ onChange }: DropdownOrderProps) {
-    const dropdownOptions = ['최신순', '인기순', '날짜순']
+const DEFAULT_OPTIONS = ['최신순', '인기순', '날짜순']
+
+export default function DropdownOrder({ onChange, options = DEFAULT_OPTIONS }: DropdownOrderProps) {
+    const dropdownOptions = options
 
     const [isDropdownOpen, setIsDropdownOpen] = useState(false)
-    const [selectedOption, setSelectedOption] = useState('최신순')
+    const [selectedOption, setSelectedOption] = useState(options[0] ?? '최신순')
 
     const dropdownOrderRef = useRef<HTMLDivElement>(null)
 

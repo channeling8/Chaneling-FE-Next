@@ -20,4 +20,8 @@ export async function requestLogout() {
     await api.post('/auth/logout')
 }
 
+export async function requestWithdrawal() {
+    await api.delete('/members/withdraw')
+}
+
 export { clearAuthSession }

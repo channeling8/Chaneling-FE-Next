@@ -1,23 +1,123 @@
+'use client'
+
+import { useQueries, useQuery } from '@tanstack/react-query'
 import Scroll from '@/components/Scroll'
 import PageContent from '@/components/layout/PageContent'
+import StatusBadge from '@/components/StatusBadge'
+import {
+    getDashboardMetadata,
+    getDashboardSuggestionDetail,
+    getDashboardSuggestions,
+    type DashboardScoreType,
+} from '@/api/dashboard'
 import DashboardHeader from './_components/DashboardHeader'
+import {
+    DashboardDateSkeleton,
+    DashboardMetricCardsSkeleton,
+    DashboardProfileCardSkeleton,
+    DashboardSuggestionsSkeleton,
+} from '@/components/dashboard/DashboardSkeletons'
 import InsightCard from './_components/InsightCard'
 import MetricCardSmall from './_components/MetricCardSmall'
 import MetricCardWithImage from './_components/MetricCardwithImage'
 import UploadCycleChart from './_components/UploadCycleChart'
-import { dashboardInsights } from './_data/insights'
 import { Footer } from '@/components/Footer'
 
-const metrics = [
-    { label: '채널 성장', score: 99, status: '최상' as const },
-    { label: '알고리즘', score: 99, status: '위험' as const },
-    { label: '시청 몰입', score: 85, status: '우수' as const },
-    { label: '반응 밀도', score: 99, status: '보통' as const },
-    { label: '유입 활력', score: 85, status: '주의' as const },
-    { label: '업로드 주기', score: 85, status: '최상' as const },
-]
+type MetricStatus = Parameters<typeof StatusBadge>[0]['status']
+
+const scoreTypeDetails: Record<DashboardScoreType, { label: string }> = {
+    CHANNEL_GROWTH: { label: '채널 성장' },
+    ALGORITHM: { label: '알고리즘' },
+    VIEW_ENGAGEMENT: { label: '시청 몰입' },
+    REACTION_DENSITY: { label: '반응 밀도' },
+    INFLOW_ACTIVITY: { label: '유입 활력' },
+    UPLOAD_CYCLE: { label: '업로드 주기' },
+}
+
+const scoreTypeOrder = Object.keys(scoreTypeDetails) as DashboardScoreType[]
+
+const metricStatuses = new Set<MetricStatus>([
+    '최상',
+    '조언',
+    '우수',
+    '긍정',
+    '최적화 원활',
+    '보통',
+    '중립',
+    '양호',
+    '주의',
+    '개선 필요',
+    '최적화 필요',
+    '위험',
+    '부정',
+])
+
+function isMetricStatus(status: string): status is MetricStatus {
+    return metricStatuses.has(status as MetricStatus)
+}
+
+function formatBaseDate(baseDate: string) {
+    try {
+        const date = new Date(baseDate)
+
+        if (Number.isNaN(date.getTime())) {
+            return '일시 정보 없음'
+        }
+
+        const parts = new Intl.DateTimeFormat('ko-KR', {
+            timeZone: 'Asia/Seoul',
+            year: '2-digit',
+            month: 'numeric',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            hourCycle: 'h23',
+        }).formatToParts(date)
+        const getPart = (type: Intl.DateTimeFormatPartTypes) =>
+            parts.find((part) => part.type === type)?.value
+
+        return `${getPart('year')}년 ${getPart('month')}월 ${getPart('day')}일 (${getPart('hour')}:${getPart('minute')}) 기준`
+    } catch {
+        return '일시 정보 없음'
+    }
+}
+
+function formatSubscribers(subscriberCount: number) {
+    return new Intl.NumberFormat('en-US', {
+        notation: 'compact',
+        maximumFractionDigits: 1,
+    }).format(subscriberCount)
+}
 
 export default function DashboardPage() {
+    const { data: metadata, isPending: isMetadataPending } = useQuery({
+        queryKey: ['dashboard', 'metadata'],
+        queryFn: getDashboardMetadata,
+    })
+    const { data: suggestions, isPending: isSuggestionsPending } = useQuery({
+        queryKey: ['dashboard', 'suggestions'],
+        queryFn: getDashboardSuggestions,
+    })
+    const suggestionDetailQueries = useQueries({
+        queries: (suggestions?.suggestionList ?? []).map((suggestion) => ({
+            queryKey: ['dashboard', 'suggestions', suggestion.suggestionId],
+            queryFn: () => getDashboardSuggestionDetail(suggestion.suggestionId),
+        })),
+    })
+    const areSuggestionDetailsPending = suggestionDetailQueries.some((query) => query.isPending)
+
+    const renderedMetrics = scoreTypeOrder.map((scoreType) => {
+        const score = metadata?.channelScoreList.find((item) => item.scoreType === scoreType)
+        const detail = scoreTypeDetails[scoreType]
+
+        return {
+            label: detail.label,
+            score: score?.score ?? null,
+            status: score?.grade && isMetricStatus(score.grade) ? score.grade : null,
+            delta: score?.scoreChange ?? null,
+        }
+    })
+
     return (
         <div className="flex h-full w-full flex-col bg-bg-0">
             <DashboardHeader />
@@ -25,46 +125,67 @@ export default function DashboardPage() {
             <Scroll as="main" className="flex-1">
                 <PageContent className="mx-auto flex flex-col gap-8 pb-8 pt-4 desktop:pb-16 desktop:pt-8">
                     <section className="flex w-full flex-col gap-2">
-                        <p className="font-body-14r text-text-tertiary">
-                            26년 2월 19일 (05:15) 기준
-                        </p>
+                        {isMetadataPending ? (
+                            <DashboardDateSkeleton />
+                        ) : metadata ? (
+                            <p className="font-body-14r text-text-tertiary">
+                                {formatBaseDate(metadata.baseDate)}
+                            </p>
+                        ) : null}
 
                         <div className="grid w-full grid-cols-1 gap-2 tablet:grid-cols-[274px_minmax(0,1fr)] desktop:grid-cols-[298px_minmax(0,1fr)]">
-                            <MetricCardWithImage
-                                channelName="LeoJ Makeup"
-                                subscribers="8.5M"
-                                delta={42}
-                                imageUrl="/images/dashboard/subscriber-card.png"
-                            />
-                            <div className="grid min-w-0 grid-cols-2 gap-2 tablet:grid-cols-3">
-                                {metrics.map((metric) => (
-                                    <MetricCardSmall key={metric.label} {...metric} delta={42} />
-                                ))}
-                            </div>
+                            {isMetadataPending ? (
+                                <>
+                                    <DashboardProfileCardSkeleton />
+                                    <DashboardMetricCardsSkeleton />
+                                </>
+                            ) : metadata ? (
+                                <>
+                                    <MetricCardWithImage
+                                        channelName={metadata.channelInfo.channelName}
+                                        subscribers={formatSubscribers(metadata.channelInfo.subscriberCount)}
+                                        delta={metadata.channelInfo.subscriberChange}
+                                        imageUrl={metadata.channelInfo.profileImageUrl}
+                                    />
+                                    <div className="grid min-w-0 grid-cols-2 gap-2 tablet:grid-cols-3">
+                                        {renderedMetrics.map((metric) => (
+                                            <MetricCardSmall key={metric.label} {...metric} />
+                                        ))}
+                                    </div>
+                                </>
+                            ) : null}
                         </div>
                     </section>
 
                     <UploadCycleChart />
 
-                    <section className="flex w-full flex-col gap-6">
-                        <div className="flex flex-col gap-2">
-                            <h2 className="font-title-18sb text-text-primary">채널링의 제안</h2>
-                            <p className="font-body-14r text-text-secondary">
-                                최근 24시간 내 특정 영상 조회수가 평소 대비 280% 급증하며 추천 피드 유입이 80%를 점유했고, 노출 가속도가 평소 대비 3.5배 상승한 폭발적 성장 단계입니다.
-                            </p>
-                        </div>
-                        <div className="flex flex-col gap-2">
-                            {dashboardInsights.map((insight) => (
-                                <InsightCard
-                                    key={insight.id}
-                                    title={insight.title}
-                                    description={insight.description}
-                                    tags={insight.tags}
-                                    href={`/dashboard/insights/${insight.id}`}
-                                />
-                            ))}
-                        </div>
-                    </section>
+                    {isSuggestionsPending || areSuggestionDetailsPending ? (
+                        <DashboardSuggestionsSkeleton />
+                    ) : suggestions ? (
+                        <section className="flex w-full flex-col gap-6">
+                            <div className="flex flex-col gap-2">
+                                <h2 className="font-title-18sb text-text-primary">채널링의 제안</h2>
+                                {suggestions.summaryMessage && (
+                                    <p className="font-body-14r text-text-secondary">
+                                        {suggestions.summaryMessage}
+                                    </p>
+                                )}
+                            </div>
+                            <div className="flex flex-col gap-2">
+                                {suggestions.suggestionList.map((insight, index) => (
+                                    <InsightCard
+                                        key={insight.suggestionId}
+                                        title={insight.title}
+                                        description={insight.description}
+                                        tags={suggestionDetailQueries[index]?.data?.expectedMetrics.map(
+                                            (metric) => `${metric.label}: ${metric.value}`
+                                        )}
+                                        href={`/dashboard/insights/${insight.suggestionId}`}
+                                    />
+                                ))}
+                            </div>
+                        </section>
+                    ) : null}
 
                 </PageContent>
                 <Footer />

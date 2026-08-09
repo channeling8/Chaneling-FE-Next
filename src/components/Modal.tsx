@@ -49,7 +49,11 @@ const Header = ({ title, caption, showClose, onClose }: HeaderProps) => (
         <div className="flex justify-between items-start gap-1">
             <div className="flex flex-col gap-1">
                 <h2 className="font-title-18sb leading-tight break-keep">{title}</h2>
-                {caption && <p className="font-body-14m text-text-secondary break-keep">{caption}</p>}
+                {caption && (
+                    <p className="whitespace-pre-line break-keep font-body-14m text-text-secondary">
+                        {caption}
+                    </p>
+                )}
             </div>
 
             {showClose && onClose && (
@@ -85,7 +89,7 @@ export const ModalButton = ({
     }
 
     return (
-        <button className={`${baseStyles} ${variants[variant]}`} {...props}>
+        <button type="button" className={`${baseStyles} ${variants[variant]}`} {...props}>
             {children}
         </button>
     )

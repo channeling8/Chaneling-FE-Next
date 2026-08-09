@@ -1,15 +1,17 @@
+'use client'
+
+import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import VideoCard from './VideoCard'
 import VideoSearchInputBar from './VideoSearchInputBar'
-import MyVideoSelect from './MyVideoSelect'
 import { Modal } from '@/components/Modal'
+import { useGetChannelVideoList } from '@/hooks/useGetChannelVideoList'
+import { formatRelativeTime } from '@/utils/format'
 
 export default function MyVideoList() {
-    const [selectedVideo, setSelectedVideo] = useState<boolean>(false)
+    const router = useRouter()
+
     const [isModalOpen, setIsModalOpen] = useState(false)
-    const handleClose = () => {
-        setSelectedVideo(false)
-    }
 
     const openModal = () => {
         setIsModalOpen(true)
@@ -18,9 +20,12 @@ export default function MyVideoList() {
     const closeModal = () => {
         setIsModalOpen(false)
     }
-    if (selectedVideo) {
-        return <MyVideoSelect onBack={handleClose} />
-    }
+    const { data, isLoading, error } = useGetChannelVideoList({
+        type: 'LONG',
+        page: 1,
+        size: 4,
+    })
+
     return (
         <div className="flex flex-col">
             <div className="font-title-18sb text-text-primary pb-2">내 영상 분석</div>
@@ -32,32 +37,46 @@ export default function MyVideoList() {
                 <div className="bg-bg-1 w-full h-px"></div>
             </div>
             <div className="grid grid-cols-1 tablet:grid-cols-2 desktop:grid-cols-4 gap-2 pb-3.5 relative">
-                <VideoCard
-                    title="영상제목이 들어가는 곳입니다. 2줄까지 가능합니다. 나머지는 ...처리해주세요"
-                    leftside="조회수"
-                    rightside="17만회"
-                    period="3년 전"
-                />
-                <VideoCard
-                    title="영상제목이 들어가는 곳입니다. 2줄까지 가능합니다. 나머지는 ...처리해주세요"
-                    leftside="조회수"
-                    rightside="17만회"
-                    period="3년 전"
-                />
-                <VideoCard
-                    title="영상제목이 들어가는 곳입니다. 2줄까지 가능합니다. 나머지는 ...처리해주세요"
-                    leftside="조회수"
-                    rightside="17만회"
-                    period="3년 전"
-                />
-                <VideoCard
-                    title="영상제목이 들어가는 곳입니다. 2줄까지 가능합니다. 나머지는 ...처리해주세요"
-                    leftside="조회수"
-                    rightside="17만회"
-                    period="3년 전"
-                />
+                {isLoading && (
+                    <div className="col-span-full py-6 text-center font-body-14m text-text-secondary">
+                        영상을 불러오는 중...
+                    </div>
+                )}
+
+                {/* {error && (
+                    <div className="col-span-full py-6 text-center font-body-14m text-red-error">
+                        영상 목록을 불러오지 못했습니다.
+                    </div>
+                )} */}
+
+                {!isLoading && !error && data?.videoList.length === 0 && (
+                    <div className="col-span-full py-6 text-center font-body-14m text-text-secondary">
+                        최근 영상이 없습니다.
+                    </div>
+                )}
+
+                {!isLoading &&
+                    !error &&
+                    data?.videoList?.map((video) => (
+                        <VideoCard
+                            key={video.videoId}
+                            title={video.videoTitle}
+                            leftside="조회수"
+                            leftsideamount={`${video.viewCount.toLocaleString()}회`}
+                            rightside={formatRelativeTime(video.uploadDate)}
+                            imageUrl={video.videoThumbnailUrl}
+                            onClick={() =>
+                                router.push(
+                                    `/reports/period?videoId=${video.videoId}&uploadDate=${encodeURIComponent(video.uploadDate)}`
+                                )
+                            }
+                        />
+                    ))}
             </div>
-            <button className="px-4 py-2 w-full bg-bg-1 rounded-[20px]" onClick={() => setSelectedVideo(true)}>
+            <button
+                className="px-4 py-2 w-full bg-bg-1 hover:bg-bg-3 cursor-pointer rounded-[20px]"
+                onClick={() => router.push('/reports/my')}
+            >
                 더보기
             </button>
 

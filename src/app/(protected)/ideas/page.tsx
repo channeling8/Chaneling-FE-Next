@@ -4,7 +4,7 @@ import Line from '@/components/Line'
 import Header from '@/components/layout/Header'
 import PageContent from '@/components/layout/PageContent'
 import Scroll from '@/components/Scroll'
-import { useLayoutStore } from '@/stores/layoutStore'
+import { useState } from 'react'
 import ContentIdeaGeneration from './_components/ContentIdeaGeneration'
 import SavedIdea from './_components/SavedIdea'
 import TrendKeyword from './_components/TrendKeyword'
@@ -15,7 +15,7 @@ import TrendKeyword from './_components/TrendKeyword'
  * - 아이디어 생성 도구
  */
 export default function IdeasPage() {
-    const openSidebar = useLayoutStore((state) => state.openSidebar)
+    const [generationKeyword, setGenerationKeyword] = useState('')
 
     return (
         <div className="flex h-full w-full flex-col bg-bg-0 desktop:pt-3">
@@ -23,9 +23,9 @@ export default function IdeasPage() {
                 <Header title="트렌드 · 아이디어" showMenu={true} />
                 <PageContent className="flex flex-col gap-8 pb-16">
                     <div className="flex flex-col items-center gap-4">
-                        <TrendKeyword />
+                        <TrendKeyword onKeywordSelect={setGenerationKeyword} />
                         <Line variant="thin" />
-                        <ContentIdeaGeneration />
+                        <ContentIdeaGeneration keyword={generationKeyword} onKeywordChange={setGenerationKeyword} />
                     </div>
                     <Line variant="thick" />
                     <SavedIdea />

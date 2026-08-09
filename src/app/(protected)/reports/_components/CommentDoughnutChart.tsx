@@ -17,6 +17,20 @@ interface CommentDonutChartProps {
 }
 
 export default function CommentDonutChart({ totalComment, data }: CommentDonutChartProps) {
+    const isEmpty = data.every((item) => item.value === 0)
+
+    const chartData = isEmpty
+        ? [
+              {
+                  name: '댓글 없음',
+                  value: 100,
+                  color: '#252527', // 원하는 어두운 회색
+              },
+          ]
+        : data
+
+    console.log(isEmpty)
+    console.log(chartData)
     return (
         // 차트 전체 크기와 중앙 텍스트 위치의 기준이 되는 부모
         // relative: 중앙 텍스트를 absolute로 배치하기 위한 기준
@@ -28,7 +42,7 @@ export default function CommentDonutChart({ totalComment, data }: CommentDonutCh
                 <PieChart>
                     <Pie
                         // 도넛 조각을 구성할 데이터
-                        data={data}
+                        data={chartData}
                         // data 객체 중 숫자 값으로 사용할 속성
                         dataKey="value"
                         // 각 조각의 이름으로 사용할 속성
@@ -44,17 +58,17 @@ export default function CommentDonutChart({ totalComment, data }: CommentDonutCh
                         // 값이 커질수록 차트가 부모 영역에 더 꽉 참
                         outerRadius="94%"
                         // 조각 사이의 각도 간격
-                        paddingAngle={2}
+                        paddingAngle={isEmpty ? 0 : 2}
                         // 차트가 그려지는 각도
                         startAngle={90}
                         endAngle={450}
                         // 각 조각 끝부분의 둥근 정도
-                        cornerRadius="15%"
+                        cornerRadius={isEmpty ? 0 : '15%'}
                         // 조각 외곽선 제거
                         stroke="none"
                     >
                         {/* 데이터별로 도넛 조각의 색상 적용 */}
-                        {data.map((item) => (
+                        {chartData.map((item) => (
                             <Cell key={item.name} fill={item.color} />
                         ))}
                     </Pie>

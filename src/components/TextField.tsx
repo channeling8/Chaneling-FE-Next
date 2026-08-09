@@ -20,8 +20,6 @@ export interface TextFieldProps extends Omit<
     inputClassName?: string
     labelClassName?: string
     textareaClassName?: string
-    fullWidth?: boolean
-    sizeVariant?: 'mobile' | 'tablet' | 'desktop'
     heightVariant?: 'small' | 'large' // 높이 크기 분기 (기본: small: 88px, large: 151px)
 }
 
@@ -40,8 +38,6 @@ export default function TextField({
     inputClassName = '',
     labelClassName = '',
     textareaClassName = '',
-    fullWidth = false,
-    sizeVariant = 'mobile',
     heightVariant = 'small',
     id: externalId,
     onFocus: externalOnFocus,

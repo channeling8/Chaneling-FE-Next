@@ -1,9 +1,12 @@
 'use client'
 
-import { FormEvent, useRef, useState } from 'react'
+import { FormEvent, useState } from 'react'
+import Image from 'next/image'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import ArrowRightIcon from '@/assets/icons/arrow_right.svg'
 import SearchIcon from '@/assets/icons/search.svg'
+import AnalysisTab from '@/app/(protected)/reports/_components/AnalysisTab'
 
 type ReportTab = 'overview' | 'analysis'
 
@@ -28,24 +31,36 @@ const reportSummaries = [
     },
 ]
 
+const previewAnalysis = {
+    reportId: 0,
+    retentionGraph: '',
+    viewerRetentionAnalysis: '',
+    algorithmOptimization: '',
+}
+
 export default function ReportPreviewSection() {
+    const router = useRouter()
     const [videoLink, setVideoLink] = useState('')
     const [activeTab, setActiveTab] = useState<ReportTab>('overview')
-    const reportRef = useRef<HTMLDivElement>(null)
 
     const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault()
-        reportRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+
+        const url = videoLink.trim()
+        if (!url) return
+
+        router.push(`/landing/report?url=${encodeURIComponent(url)}`)
     }
 
     return (
         <section aria-labelledby="report-preview-heading" className="flex flex-col gap-4">
-            <div className="flex max-w-[311px] flex-col gap-1">
+            <div className="flex max-w-77.75 flex-col gap-1">
                 <h2 id="report-preview-heading" className="font-title-20sb text-text-primary">
                     영상 리포트를 미리 체험해보세요
                 </h2>
                 <p className="font-body-14r text-text-secondary">
-                    유튜브 영상 링크를 입력하시면<br />
+                    유튜브 영상 링크를 입력하시면
+                    <br />
                     채널링 AI 영상 리포트를 미리 보여드립니다
                 </p>
             </div>
@@ -56,6 +71,7 @@ export default function ReportPreviewSection() {
                     <span className="sr-only">유튜브 영상 링크</span>
                     <input
                         type="url"
+                        required
                         value={videoLink}
                         onChange={(event) => setVideoLink(event.target.value)}
                         placeholder="분석할 영상 링크를 입력해주세요"
@@ -64,31 +80,29 @@ export default function ReportPreviewSection() {
                 </label>
                 <button
                     type="submit"
+                    disabled={!videoLink.trim()}
                     aria-label="영상 리포트 보기"
-                    className="flex size-12 shrink-0 items-center justify-center rounded-[20px] bg-bg-3 text-icon-secondary desktop:size-[51px]"
+                    className="flex size-12 shrink-0 items-center justify-center rounded-[20px] bg-bg-3 text-icon-secondary disabled:cursor-not-allowed disabled:opacity-50 desktop:size-12.75"
                 >
                     <ArrowRightIcon aria-hidden className="size-6" />
                 </button>
             </form>
 
-            <div ref={reportRef} className="relative flex flex-col gap-4 border-t-[1.5px] border-border-subtitle pt-[15px]">
+            <div className="relative flex flex-col gap-4 border-t-[1.5px] border-border-subtitle pt-3.75">
                 <span className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2 bg-bg-0 px-1 font-body-14r text-text-secondary">
                     리포트 예시
                 </span>
 
                 <div className="flex flex-col gap-4 tablet:flex-row">
-                    <div
-                        aria-label="리포트 영상 썸네일 예시"
-                        role="img"
-                        className="aspect-video w-full shrink-0 rounded-[20px] tablet:w-[237px] desktop:w-[316px]"
-                        style={{
-                            backgroundColor: '#fff',
-                            backgroundImage:
-                                'linear-gradient(45deg, #eaeaea 25%, transparent 25%), linear-gradient(-45deg, #eaeaea 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #eaeaea 75%), linear-gradient(-45deg, transparent 75%, #eaeaea 75%)',
-                            backgroundPosition: '0 0, 0 8px, 8px -8px, -8px 0',
-                            backgroundSize: '16px 16px',
-                        }}
-                    />
+                    <div className="relative aspect-video w-full shrink-0 overflow-hidden rounded-[20px] tablet:w-59.25 desktop:w-79">
+                        <Image
+                            src="/images/dashboard/demo_thumbnail.png"
+                            alt="주말 아침 루틴 영상 썸네일"
+                            fill
+                            sizes="(min-width: 1280px) 316px, (min-width: 768px) 237px, calc(100vw - 32px)"
+                            className="object-cover"
+                        />
+                    </div>
                     <div className="flex min-w-0 flex-col gap-1">
                         <span className="self-start rounded-full bg-bg-2 px-2 py-1 font-caption-12m text-text-primary">
                             Long-Form
@@ -129,9 +143,11 @@ export default function ReportPreviewSection() {
                             {reportSummaries.map(({ badge, badgeClassName, title, description }) => (
                                 <article
                                     key={title}
-                                    className="flex min-h-[147px] flex-col gap-2 rounded-[20px] bg-bg-1 p-5 tablet:min-h-[126px] desktop:min-h-[132px]"
+                                    className="flex min-h-36.75 flex-col gap-2 rounded-[20px] bg-bg-1 p-5 tablet:min-h-31.5 desktop:min-h-33"
                                 >
-                                    <span className={`self-start rounded-lg px-1 py-0.5 text-[14px] font-medium leading-[1.4] ${badgeClassName}`}>
+                                    <span
+                                        className={`self-start rounded-lg px-1 py-0.5 text-[14px] font-medium leading-[1.4] ${badgeClassName}`}
+                                    >
                                         {badge}
                                     </span>
                                     <div className="flex flex-col gap-1">
@@ -143,12 +159,13 @@ export default function ReportPreviewSection() {
                         </div>
                     </div>
                 ) : (
-                    <div className="flex min-h-[445px] flex-col gap-2 desktop:min-h-[432px]">
-                        <h4 className="text-[16px] font-semibold leading-[1.4] text-text-primary">심층 반응 분석</h4>
-                        <div className="flex flex-col gap-4 rounded-[20px] bg-bg-1 p-5 font-body-14r text-text-secondary">
-                            <p>댓글과 시청 지표를 기반으로 영상의 핵심 반응을 분석합니다.</p>
-                            <p>가장 높은 호감 키워드: 힐링, 요리, 음악</p>
-                        </div>
+                    <div className="h-111.25 overflow-hidden desktop:h-108">
+                        <AnalysisTab
+                            analysis={previewAnalysis}
+                            isPending={false}
+                            isError={false}
+                            lockViewerRetentionDetails
+                        />
                     </div>
                 )}
 
@@ -156,14 +173,18 @@ export default function ReportPreviewSection() {
                     href="/landing/report"
                     className="group relative mt-2 block w-full cursor-pointer overflow-hidden rounded-[20px] p-0.5 focus:outline-none"
                 >
-                    <span
-                        aria-hidden
-                        className="absolute inset-[-1000%] animate-[spin_6s_linear_infinite]"
-                        style={{
-                            background: 'conic-gradient(from 0deg, #141415 0%, #141415 70%, #da1b2e 100%)',
-                            filter: 'blur(3px)',
-                        }}
-                    />
+                    <div className="absolute inset-0 flex items-center justify-center scale-x-[2.5] sm:scale-x-[3]">
+                        <span
+                            aria-hidden
+                            // animate-[spin_2.5s_linear_infinite] 안의 숫자로 속도를 조절합니다
+                            className="w-[200%] aspect-square animate-[spin_2.5s_linear_infinite]"
+                            style={{
+                                background: 'conic-gradient(from 0deg, #141415 0%, #141415 85%, #da1b2e 100%)',
+                                filter: 'blur(3px)',
+                            }}
+                        />
+                    </div>
+
                     <span className="relative z-10 flex w-full items-center justify-center rounded-[18px] bg-bg-1 py-3.5 font-title-18sb text-text-primary transition-colors group-hover:bg-bg-1/95">
                         실제 데이터로 정밀한 리포트 받기
                     </span>

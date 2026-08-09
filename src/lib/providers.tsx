@@ -1,10 +1,15 @@
 'use client'
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import AuthInitializer from '@/components/auth/AuthInitializer'
+import { useAuthStore } from '@/stores/authStore'
 
 export function Providers({ children }: { children: React.ReactNode }) {
+    useEffect(() => {
+        useAuthStore.persist.rehydrate()
+    }, [])
+
     const [queryClient] = useState(
         () =>
             new QueryClient({

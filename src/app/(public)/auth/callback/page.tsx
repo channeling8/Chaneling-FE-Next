@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 import { clearAuthSession } from '@/api/auth'
 import { getMember } from '@/api/member'
+import DashboardLoadingView from '@/components/dashboard/DashboardLoadingView'
 import { authStorage } from '@/lib/auth-storage'
 import { useAuthStore } from '@/stores/authStore'
 
@@ -33,6 +34,9 @@ export default function AuthCallbackPage() {
             const isNew = urlParams.get('isNew') === 'true'
             const parsedChannelId = Number(channelId)
 
+            // access token이 브라우저 주소, history, referrer에 오래 남지 않도록 즉시 제거
+            window.history.replaceState(null, '', window.location.pathname)
+
             if (
                 message !== 'Success'
                 || !accessToken
@@ -60,20 +64,18 @@ export default function AuthCallbackPage() {
         void handleCallback()
     }, [router, setUser])
 
+    if (!errorMessage) return <DashboardLoadingView />
+
     return (
         <div className="flex min-h-screen flex-col items-center justify-center gap-4">
-            <p className="font-body-16m text-text-primary">
-                {errorMessage || '로그인 처리 중...'}
-            </p>
-            {errorMessage && (
-                <button
-                    type="button"
-                    onClick={() => router.replace('/')}
-                    className="rounded-[20px] bg-primary-60 px-4 py-2 font-body-14m text-text-primary hover:bg-primary-70"
-                >
-                    처음으로 돌아가기
-                </button>
-            )}
+            <p className="font-body-16m text-text-primary">{errorMessage}</p>
+            <button
+                type="button"
+                onClick={() => router.replace('/')}
+                className="rounded-[20px] bg-primary-60 px-4 py-2 font-body-14m text-text-primary hover:bg-primary-70"
+            >
+                처음으로 돌아가기
+            </button>
         </div>
     )
 }

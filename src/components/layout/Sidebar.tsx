@@ -3,6 +3,8 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { type ReactNode, useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
+import { getSubscriptionPage, type SubscriptionPlan } from '@/api/subscription'
 import DashboardIcon from '@/assets/icons/dashboard.svg'
 import FeedbackIcon from '@/assets/icons/feedback.svg'
 import IdeaIcon from '@/assets/icons/idea.svg'
@@ -10,6 +12,7 @@ import LogoIcon from '@/assets/icons/logo.svg'
 import ReportIcon from '@/assets/icons/report.svg'
 import CloseIcon from '@/assets/icons/sidebar-close.svg'
 import ProfileImage from '@/components/ProfileImage'
+import { useAuthStore } from '@/stores/authStore'
 
 interface SidebarProps {
     isOpen?: boolean
@@ -23,6 +26,12 @@ interface SidebarItemProps {
     isDesktopCollapsed: boolean
     label: string
     onNavigate?: () => void
+}
+
+const planNameBySubscriptionPlan: Record<SubscriptionPlan, string> = {
+    FREE: 'Free',
+    BASIC: 'Creator',
+    ENTERPRISE: 'Pro',
 }
 
 function SidebarItem({
@@ -64,6 +73,19 @@ function SidebarItem({
 export default function Sidebar({ isOpen = true, onClose }: SidebarProps) {
     const pathname = usePathname()
     const [isDesktopCollapsed, setIsDesktopCollapsed] = useState(false)
+    const user = useAuthStore((state) => state.user)
+    const subscriptionQuery = useQuery({
+        queryKey: ['subscription', 'me'],
+        queryFn: getSubscriptionPage,
+        enabled: pathname !== '/onboarding',
+        staleTime: 60_000,
+    })
+    const channelName = user?.nickname?.trim() || '채널 정보'
+    const planName = subscriptionQuery.data
+        ? planNameBySubscriptionPlan[subscriptionQuery.data.plan]
+        : subscriptionQuery.isPending
+          ? '플랜 확인 중'
+          : '플랜 정보 없음'
 
     if (pathname === '/onboarding') return null
 
@@ -168,19 +190,19 @@ export default function Sidebar({ isOpen = true, onClose }: SidebarProps) {
                             <Link
                                 href="/settings"
                                 onClick={onClose}
-                                aria-label="채널 설정"
+                                aria-label={`${channelName} 채널 설정`}
                                 className={`flex w-full shrink-0 items-center transition-[height,gap] duration-300 ${isDesktopCollapsed ? 'desktop:h-6 desktop:gap-0' : 'gap-2'}`}
                             >
-                                <ProfileImage size={24} />
+                                <ProfileImage src={user?.profileImage} size={24} />
                                 <span
                                     aria-hidden={isDesktopCollapsed}
                                     className={`min-w-0 overflow-hidden whitespace-nowrap transition-[max-width,max-height,opacity] duration-300 ${isDesktopCollapsed ? 'desktop:max-h-0 desktop:max-w-0 desktop:opacity-0' : 'max-h-12 max-w-[120px] flex-1 opacity-100'}`}
                                 >
                                     <span className="block truncate font-caption-12r text-text-secondary desktop:text-[14px]">
-                                        Free
+                                        {planName}
                                     </span>
                                     <span className="block truncate font-body-14m text-text-primary desktop:text-[16px]">
-                                        채널이름
+                                        {channelName}
                                     </span>
                                 </span>
                             </Link>
@@ -201,7 +223,7 @@ export default function Sidebar({ isOpen = true, onClose }: SidebarProps) {
                                 aria-hidden
                                 className="pointer-events-none absolute left-12 top-1/2 z-50 hidden h-10 -translate-y-1/2 items-center whitespace-nowrap rounded-lg bg-bg-2 px-2 font-body-16m text-text-primary opacity-0 shadow-[2px_0_2px_rgba(20,20,21,0.5)] transition-opacity desktop:flex group-hover/profile:opacity-100 group-focus-within/profile:opacity-100"
                             >
-                                채널이름
+                                {channelName}
                             </span>
                         )}
                     </div>

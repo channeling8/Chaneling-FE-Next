@@ -2,8 +2,9 @@ import type { BillingCycle, PlanName, PricingPlan } from '../types'
 
 interface PricingPlanCardProps {
     billingCycle: BillingCycle
-    currentPlan: PlanName
+    currentPlan: PlanName | null
     isLoggedIn: boolean
+    isPlanLoading?: boolean
     isRecommended: boolean
     onSelectPlan?: (plan: PlanName) => void
     plan: PricingPlan
@@ -13,12 +14,13 @@ export default function PricingPlanCard({
     billingCycle,
     currentPlan,
     isLoggedIn,
+    isPlanLoading = false,
     isRecommended,
     onSelectPlan,
     plan,
 }: PricingPlanCardProps) {
     const price = plan.prices[billingCycle]
-    const isCurrentPlan = isLoggedIn && currentPlan === plan.name
+    const isCurrentPlan = isLoggedIn && !isPlanLoading && currentPlan === plan.name
     const buttonLabel = !isLoggedIn && plan.name === 'Free' ? '지금 시작' : plan.selectButtonLabel
     const shouldBreakAdditionalFeature = plan.name === 'Pro'
 
@@ -56,15 +58,15 @@ export default function PricingPlanCard({
             <button
                 type="button"
                 onClick={() => onSelectPlan?.(plan.name)}
-                disabled={isCurrentPlan}
+                disabled={isCurrentPlan || isPlanLoading}
                 aria-current={isCurrentPlan ? 'true' : undefined}
                 className={`flex w-full items-center justify-center rounded-[10px] p-2 font-body-16sb transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-active ${
-                    isCurrentPlan
+                    isCurrentPlan || isPlanLoading
                         ? 'cursor-default border border-gray-40 bg-gray-30 text-text-tertiary'
                         : 'bg-primary-60 text-text-primary hover:bg-primary-50'
                 }`}
             >
-                {isCurrentPlan ? '현재 플랜' : buttonLabel}
+                {isPlanLoading ? '플랜 확인 중' : isCurrentPlan ? '현재 플랜' : buttonLabel}
             </button>
 
             <dl className="flex w-full flex-col gap-2 font-caption-12r desktop:font-caption-14r">

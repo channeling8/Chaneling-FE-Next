@@ -3,7 +3,7 @@ import ArrowIcon from '@/assets/icons/arrow.svg'
 
 export default function InsightDetailHeader() {
     return (
-        <header className="flex w-full items-center gap-2 py-4 desktop:py-5">
+        <header className="sticky top-0 z-40 flex w-full items-center gap-2 bg-bg-0 py-4 desktop:py-5">
             <Link
                 href="/dashboard"
                 aria-label="대시보드로 돌아가기"

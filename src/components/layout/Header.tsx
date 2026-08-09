@@ -48,7 +48,7 @@ export default function Header({
 
     return (
         <header
-            className={`flex min-h-14 w-full items-center justify-between bg-bg-0 px-4 py-3 tablet:px-5 tablet:py-4 desktop:px-16 desktop:py-5 ${className}`}
+            className={`sticky top-0 z-40 flex min-h-14 w-full shrink-0 items-center justify-between bg-bg-0 px-4 py-3 tablet:px-5 tablet:py-4 desktop:px-16 desktop:py-5 ${className}`}
             {...props}
         >
             <div className="flex items-center gap-2">

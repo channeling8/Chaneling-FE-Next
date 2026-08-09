@@ -12,7 +12,6 @@ export interface VideoSearchInputBarProps extends Omit<InputHTMLAttributes<HTMLI
     errorMessage?: string
     onClear?: () => void
     onClick?: () => void
-    sizeVariant?: 'mobile' | 'tablet' | 'desktop'
 }
 
 export default function VideoSearchInputBar({
@@ -23,7 +22,6 @@ export default function VideoSearchInputBar({
     onClear,
     onClick,
     placeholder = '영상 링크를 입력해주세요',
-    sizeVariant = 'mobile',
     id: externalId,
     ...rest
 }: VideoSearchInputBarProps) {
