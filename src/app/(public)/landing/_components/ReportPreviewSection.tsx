@@ -54,12 +54,13 @@ export default function ReportPreviewSection() {
 
     return (
         <section aria-labelledby="report-preview-heading" className="flex flex-col gap-4">
-            <div className="flex max-w-[311px] flex-col gap-1">
+            <div className="flex max-w-77.75 flex-col gap-1">
                 <h2 id="report-preview-heading" className="font-title-20sb text-text-primary">
                     영상 리포트를 미리 체험해보세요
                 </h2>
                 <p className="font-body-14r text-text-secondary">
-                    유튜브 영상 링크를 입력하시면<br />
+                    유튜브 영상 링크를 입력하시면
+                    <br />
                     채널링 AI 영상 리포트를 미리 보여드립니다
                 </p>
             </div>
@@ -81,19 +82,19 @@ export default function ReportPreviewSection() {
                     type="submit"
                     disabled={!videoLink.trim()}
                     aria-label="영상 리포트 보기"
-                    className="flex size-12 shrink-0 items-center justify-center rounded-[20px] bg-bg-3 text-icon-secondary disabled:cursor-not-allowed disabled:opacity-50 desktop:size-[51px]"
+                    className="flex size-12 shrink-0 items-center justify-center rounded-[20px] bg-bg-3 text-icon-secondary disabled:cursor-not-allowed disabled:opacity-50 desktop:size-12.75"
                 >
                     <ArrowRightIcon aria-hidden className="size-6" />
                 </button>
             </form>
 
-            <div className="relative flex flex-col gap-4 border-t-[1.5px] border-border-subtitle pt-[15px]">
+            <div className="relative flex flex-col gap-4 border-t-[1.5px] border-border-subtitle pt-3.75">
                 <span className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2 bg-bg-0 px-1 font-body-14r text-text-secondary">
                     리포트 예시
                 </span>
 
                 <div className="flex flex-col gap-4 tablet:flex-row">
-                    <div className="relative aspect-video w-full shrink-0 overflow-hidden rounded-[20px] tablet:w-[237px] desktop:w-[316px]">
+                    <div className="relative aspect-video w-full shrink-0 overflow-hidden rounded-[20px] tablet:w-59.25 desktop:w-79">
                         <Image
                             src="/images/dashboard/demo_thumbnail.png"
                             alt="주말 아침 루틴 영상 썸네일"
@@ -142,9 +143,11 @@ export default function ReportPreviewSection() {
                             {reportSummaries.map(({ badge, badgeClassName, title, description }) => (
                                 <article
                                     key={title}
-                                    className="flex min-h-[147px] flex-col gap-2 rounded-[20px] bg-bg-1 p-5 tablet:min-h-[126px] desktop:min-h-[132px]"
+                                    className="flex min-h-36.75 flex-col gap-2 rounded-[20px] bg-bg-1 p-5 tablet:min-h-31.5 desktop:min-h-33"
                                 >
-                                    <span className={`self-start rounded-lg px-1 py-0.5 text-[14px] font-medium leading-[1.4] ${badgeClassName}`}>
+                                    <span
+                                        className={`self-start rounded-lg px-1 py-0.5 text-[14px] font-medium leading-[1.4] ${badgeClassName}`}
+                                    >
                                         {badge}
                                     </span>
                                     <div className="flex flex-col gap-1">
@@ -156,7 +159,7 @@ export default function ReportPreviewSection() {
                         </div>
                     </div>
                 ) : (
-                    <div className="h-[445px] overflow-hidden desktop:h-[432px]">
+                    <div className="h-111.25 overflow-hidden desktop:h-108">
                         <AnalysisTab
                             analysis={previewAnalysis}
                             isPending={false}
@@ -170,14 +173,18 @@ export default function ReportPreviewSection() {
                     href="/landing/report"
                     className="group relative mt-2 block w-full cursor-pointer overflow-hidden rounded-[20px] p-0.5 focus:outline-none"
                 >
-                    <span
-                        aria-hidden
-                        className="absolute inset-[-1000%] animate-[spin_6s_linear_infinite]"
-                        style={{
-                            background: 'conic-gradient(from 0deg, #141415 0%, #141415 70%, #da1b2e 100%)',
-                            filter: 'blur(3px)',
-                        }}
-                    />
+                    <div className="absolute inset-0 flex items-center justify-center scale-x-[2.5] sm:scale-x-[3]">
+                        <span
+                            aria-hidden
+                            // animate-[spin_2.5s_linear_infinite] 안의 숫자로 속도를 조절합니다
+                            className="w-[200%] aspect-square animate-[spin_2.5s_linear_infinite]"
+                            style={{
+                                background: 'conic-gradient(from 0deg, #141415 0%, #141415 85%, #da1b2e 100%)',
+                                filter: 'blur(3px)',
+                            }}
+                        />
+                    </div>
+
                     <span className="relative z-10 flex w-full items-center justify-center rounded-[18px] bg-bg-1 py-3.5 font-title-18sb text-text-primary transition-colors group-hover:bg-bg-1/95">
                         실제 데이터로 정밀한 리포트 받기
                     </span>
