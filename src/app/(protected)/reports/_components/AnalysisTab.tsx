@@ -33,6 +33,37 @@ const GRADE_STYLES: Record<AlgorithmGrade, { label: string; tone: ScoreBadgeProp
     GOOD: { label: '좋음', tone: 'positive' },
 }
 
+const LOCKED_RETENTION_POINTS: RetentionPoint[] = [
+    { time: '00:00', retentionRate: 100 },
+    { time: '00:15', retentionRate: 82 },
+    { time: '00:30', retentionRate: 71 },
+    { time: '00:45', retentionRate: 58 },
+    { time: '01:00', retentionRate: 52 },
+    { time: '01:15', retentionRate: 43 },
+    { time: '01:30', retentionRate: 37 },
+]
+
+const LOCKED_VIEWER_RETENTION_ANALYSIS: ViewerRetentionAnalysis = {
+    criticalSection: {
+        startTime: '00:30',
+        endTime: '00:45',
+        duration: 15,
+    },
+    causes: [
+        {
+            title: '영상 흐름 변화',
+            description: '시청자 이탈이 발생한 구간의 원인을 분석한 내용입니다.',
+        },
+    ],
+    improvements: [
+        {
+            title: '편집 구성 개선',
+            description: '시청 흐름을 유지하기 위한 구체적인 개선 방안입니다.',
+        },
+    ],
+    expectedEffect: '개선 적용 시 기대할 수 있는 시청 지속 효과입니다.',
+}
+
 interface AnalysisItemProps {
     label: ReactNode
     children: ReactNode
@@ -353,10 +384,24 @@ function AnalysisTabError({ onRetry }: { onRetry?: () => void }) {
     )
 }
 
-function AnalysisTabContent({ analysis }: { analysis: ReportAnalysis }) {
+function AnalysisTabContent({
+    analysis,
+    lockViewerRetentionDetails = false,
+    lockAlgorithmImprovements = false,
+}: {
+    analysis: ReportAnalysis
+    lockViewerRetentionDetails?: boolean
+    lockAlgorithmImprovements?: boolean
+}) {
     const { retentionGraph, viewerRetentionAnalysis, algorithmOptimization } = analysis
-    const retentionPoints = parseRetentionGraph(retentionGraph)
-    const structuredViewerAnalysis = parseViewerRetentionAnalysis(viewerRetentionAnalysis)
+    const parsedRetentionPoints = parseRetentionGraph(retentionGraph)
+    const parsedViewerAnalysis = parseViewerRetentionAnalysis(viewerRetentionAnalysis)
+    const retentionPoints =
+        parsedRetentionPoints.length > 0 || !lockViewerRetentionDetails
+            ? parsedRetentionPoints
+            : LOCKED_RETENTION_POINTS
+    const structuredViewerAnalysis =
+        parsedViewerAnalysis ?? (lockViewerRetentionDetails ? LOCKED_VIEWER_RETENTION_ANALYSIS : null)
     const structuredAlgorithmOptimization = parseAlgorithmOptimization(algorithmOptimization)
 
     return (
@@ -366,7 +411,7 @@ function AnalysisTabContent({ analysis }: { analysis: ReportAnalysis }) {
                     시청자 이탈 분석
                 </h2>
 
-                <div className="flex flex-col gap-4 overflow-hidden rounded-[20px] bg-bg-1 p-5">
+                <div className="relative flex flex-col gap-4 overflow-hidden rounded-[20px] bg-bg-1 p-5">
                     {structuredViewerAnalysis ? (
                         <div className="flex flex-col gap-1">
                             <p className="font-body-14m text-text-brand">
@@ -388,35 +433,49 @@ function AnalysisTabContent({ analysis }: { analysis: ReportAnalysis }) {
                         />
                     )}
 
-                    {structuredViewerAnalysis ? (
-                        <>
-                            <AnalysisItem label="1. 이탈 원인">
-                                {structuredViewerAnalysis.causes.map((cause, index) => (
-                                    <Bullet key={`${cause.title}-${index}`} label={cause.title}>
-                                        {cause.description}
-                                    </Bullet>
-                                ))}
-                            </AnalysisItem>
+                    <div
+                        className={`relative flex flex-col gap-4 ${
+                            lockViewerRetentionDetails ? '-mx-5 -mb-5 min-h-[319px] px-5 pb-5' : ''
+                        }`}
+                    >
+                        {structuredViewerAnalysis ? (
+                            <>
+                                <AnalysisItem label="1. 이탈 원인">
+                                    {structuredViewerAnalysis.causes.map((cause, index) => (
+                                        <Bullet key={`${cause.title}-${index}`} label={cause.title}>
+                                            {cause.description}
+                                        </Bullet>
+                                    ))}
+                                </AnalysisItem>
 
-                            <Divider />
+                                <Divider />
 
-                            <AnalysisItem label="2. 개선 방안">
-                                {structuredViewerAnalysis.improvements.map((improvement, index) => (
-                                    <Bullet key={`${improvement.title}-${index}`} label={improvement.title}>
-                                        {improvement.description}
-                                    </Bullet>
-                                ))}
-                            </AnalysisItem>
+                                <AnalysisItem label="2. 개선 방안">
+                                    {structuredViewerAnalysis.improvements.map((improvement, index) => (
+                                        <Bullet key={`${improvement.title}-${index}`} label={improvement.title}>
+                                            {improvement.description}
+                                        </Bullet>
+                                    ))}
+                                </AnalysisItem>
 
-                            <Divider />
+                                <Divider />
 
-                            <AnalysisItem label="3. 기대 효과">
-                                <Bullet>{structuredViewerAnalysis.expectedEffect}</Bullet>
-                            </AnalysisItem>
-                        </>
-                    ) : (
-                        <AnalysisMarkdown content={viewerRetentionAnalysis} />
-                    )}
+                                <AnalysisItem label="3. 기대 효과">
+                                    <Bullet>{structuredViewerAnalysis.expectedEffect}</Bullet>
+                                </AnalysisItem>
+                            </>
+                        ) : (
+                            <AnalysisMarkdown content={viewerRetentionAnalysis} />
+                        )}
+
+                        {lockViewerRetentionDetails && (
+                            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-white/1 p-6 text-center backdrop-blur-[10px] transition-all duration-300">
+                                <span className="font-body-16m text-text-primary">
+                                    로그인 시, 본인 영상의 분석에서 확인할 수 있어요
+                                </span>
+                            </div>
+                        )}
+                    </div>
                 </div>
             </section>
 
@@ -451,24 +510,45 @@ function AnalysisTabContent({ analysis }: { analysis: ReportAnalysis }) {
                                                 </span>
                                             }
                                         >
-                                            {item.issues.map((issue, issueIndex) => (
-                                                <div
-                                                    key={`${issue.type}-${issueIndex}`}
-                                                    className="flex flex-col gap-2"
-                                                >
-                                                    <Bullet label={ISSUE_LABELS[issue.type] ?? issue.type}>
-                                                        {issue.content}
-                                                    </Bullet>
-                                                    {issue.examples
-                                                        ?.split('\n')
-                                                        .filter(Boolean)
-                                                        .map((example, exampleIndex) => (
-                                                            <Bullet key={`${example}-${exampleIndex}`} secondary>
-                                                                {example}
-                                                            </Bullet>
-                                                        ))}
-                                                </div>
-                                            ))}
+                                            {item.issues.map((issue, issueIndex) => {
+                                                const isLockedImprovement =
+                                                    lockAlgorithmImprovements && issue.type === 'IMPROVEMENT'
+
+                                                return (
+                                                    <div
+                                                        key={`${issue.type}-${issueIndex}`}
+                                                        className="flex flex-col gap-2"
+                                                    >
+                                                        <Bullet label={ISSUE_LABELS[issue.type] ?? issue.type}>
+                                                            <span
+                                                                className={
+                                                                    isLockedImprovement
+                                                                        ? 'select-none blur-[5px]'
+                                                                        : undefined
+                                                                }
+                                                            >
+                                                                {issue.content}
+                                                            </span>
+                                                        </Bullet>
+                                                        {issue.examples
+                                                            ?.split('\n')
+                                                            .filter(Boolean)
+                                                            .map((example, exampleIndex) => (
+                                                                <Bullet key={`${example}-${exampleIndex}`} secondary>
+                                                                    <span
+                                                                        className={
+                                                                            isLockedImprovement
+                                                                                ? 'select-none blur-[5px]'
+                                                                                : undefined
+                                                                        }
+                                                                    >
+                                                                        {example}
+                                                                    </span>
+                                                                </Bullet>
+                                                            ))}
+                                                    </div>
+                                                )
+                                            })}
                                         </AnalysisItem>
                                     </div>
                                 )
@@ -502,10 +582,19 @@ interface AnalysisTabProps {
     analysis?: ReportAnalysis
     isPending: boolean
     isError: boolean
+    lockViewerRetentionDetails?: boolean
+    lockAlgorithmImprovements?: boolean
     onRetry?: () => void
 }
 
-export default function AnalysisTab({ analysis, isPending, isError, onRetry }: AnalysisTabProps) {
+export default function AnalysisTab({
+    analysis,
+    isPending,
+    isError,
+    lockViewerRetentionDetails = false,
+    lockAlgorithmImprovements = false,
+    onRetry,
+}: AnalysisTabProps) {
     if (isError) {
         return <AnalysisTabError onRetry={onRetry} />
     }
@@ -514,5 +603,11 @@ export default function AnalysisTab({ analysis, isPending, isError, onRetry }: A
         return <AnalysisTabSkeleton />
     }
 
-    return <AnalysisTabContent analysis={analysis} />
+    return (
+        <AnalysisTabContent
+            analysis={analysis}
+            lockViewerRetentionDetails={lockViewerRetentionDetails}
+            lockAlgorithmImprovements={lockAlgorithmImprovements}
+        />
+    )
 }

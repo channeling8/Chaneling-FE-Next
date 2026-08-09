@@ -1,20 +1,22 @@
 import StatusBadge from '@/components/StatusBadge'
 
+export type SummaryStatus =
+    | '최상'
+    | '조언'
+    | '우수'
+    | '긍정'
+    | '최적화 원활'
+    | '보통'
+    | '중립'
+    | '양호'
+    | '주의'
+    | '개선 필요'
+    | '최적화 필요'
+    | '위험'
+    | '부정'
+
 interface SummaryCardProps {
-    status:
-        | '최상'
-        | '조언'
-        | '우수'
-        | '긍정'
-        | '최적화 원활'
-        | '보통'
-        | '중립'
-        | '양호'
-        | '주의'
-        | '개선 필요'
-        | '최적화 필요'
-        | '위험'
-        | '부정'
+    status: SummaryStatus
     summaryTitle: string
     details: string
 }

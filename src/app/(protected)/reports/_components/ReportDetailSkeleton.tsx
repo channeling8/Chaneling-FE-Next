@@ -1,20 +1,27 @@
 import Header from '@/components/layout/Header'
 import PageContent from '@/components/layout/PageContent'
 import { SkeletonBase } from '@/components/Skeletonbase'
+import type { ReactNode } from 'react'
 import OverviewTabSkeleton from './OverviewTabSkeleton'
 import ReportProgressBar from './ReportProgressBar'
 import ReportTabBar from './ReportTabBar'
 
 interface ReportDetailSkeletonProps {
     currentStep?: number
+    leading?: ReactNode
     statusMessage: string
     title: string
 }
 
-export default function ReportDetailSkeleton({ currentStep, statusMessage, title }: ReportDetailSkeletonProps) {
+export default function ReportDetailSkeleton({
+    currentStep,
+    leading,
+    statusMessage,
+    title,
+}: ReportDetailSkeletonProps) {
     return (
         <div className="flex h-full w-full flex-col bg-bg-0 desktop:pt-3" aria-busy="true" aria-live="polite">
-            <Header title={title} className="tablet:min-h-16 desktop:min-h-18" />
+            <Header title={title} leading={leading} className="tablet:min-h-16 desktop:min-h-18" />
             {currentStep !== undefined && <ReportProgressBar currentStep={currentStep} />}
             <PageContent as="main" className="flex flex-1 flex-col gap-4 pb-16 pt-4">
                 <span className="sr-only">{statusMessage}</span>

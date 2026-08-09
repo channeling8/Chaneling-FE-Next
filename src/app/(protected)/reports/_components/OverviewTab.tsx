@@ -2,7 +2,7 @@ import EvaluationCard from './EvaluationCard'
 import SummaryComment from './SummaryComment'
 import SummaryCard from './SummaryCard'
 import { ReportOverviewresponse, ReportSummaryResponse } from '@/types/reports'
-import { formatKoreanNumber } from '@/utils/format'
+import { formatReportMetric } from '@/utils/format'
 import CommentSummarySection from './CommentSummarySection'
 import OverviewTabSkeleton from './OverviewTabSkeleton'
 
@@ -41,22 +41,22 @@ export default function OverviewTab({ overview, summary, isPending }: OverviewPr
                     <div className="grid grid-cols-2 tablet:grid-cols-3 gap-2">
                         <EvaluationCard
                             type="view"
-                            score={formatKoreanNumber(overview?.view, '')}
-                            average={overview?.viewChannelAvg}
+                            score={formatReportMetric(overview.view)}
+                            average={formatReportMetric(overview.viewChannelAvg)}
                         />
                         <EvaluationCard
                             type="likes"
-                            score={formatKoreanNumber(overview?.likeCount, '')}
-                            average={overview?.likeChannelAvg}
+                            score={formatReportMetric(overview.likeCount)}
+                            average={formatReportMetric(overview.likeChannelAvg)}
                         />
                         <EvaluationCard
                             type="comments"
-                            score={formatKoreanNumber(overview?.comment, '')}
-                            average={overview?.commentChannelAvg}
+                            score={formatReportMetric(overview.comment)}
+                            average={formatReportMetric(overview.commentChannelAvg)}
                         />
-                        <EvaluationCard type="concept-consistency" score={formatKoreanNumber(overview?.concept, '')} />
-                        <EvaluationCard type="SEO" score={formatKoreanNumber(overview?.seo, '')} />
-                        <EvaluationCard type="revisit-rate" score={formatKoreanNumber(overview?.revisit, '')} />
+                        <EvaluationCard type="concept-consistency" score={formatReportMetric(overview.concept)} />
+                        <EvaluationCard type="SEO" score={formatReportMetric(overview.seo)} />
+                        <EvaluationCard type="revisit-rate" score={formatReportMetric(overview.revisit)} />
                     </div>
                 </section>
             )}

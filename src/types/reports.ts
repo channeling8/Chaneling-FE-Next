@@ -104,7 +104,7 @@ export type Comments = {
     category: string // 카테고리 (positive/negative/neutral/advice)
     content: string
     author: string
-    authorProfileImageUrl: string
+    authorProfileImageUrl: string | null
     publishedAt: string
     likeCount: number
 }

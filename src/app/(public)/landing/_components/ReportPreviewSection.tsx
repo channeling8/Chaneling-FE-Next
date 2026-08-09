@@ -1,10 +1,12 @@
 'use client'
 
-import { FormEvent, useRef, useState } from 'react'
+import { FormEvent, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import ArrowRightIcon from '@/assets/icons/arrow_right.svg'
 import SearchIcon from '@/assets/icons/search.svg'
+import AnalysisTab from '@/app/(protected)/reports/_components/AnalysisTab'
 
 type ReportTab = 'overview' | 'analysis'
 
@@ -29,14 +31,25 @@ const reportSummaries = [
     },
 ]
 
+const previewAnalysis = {
+    reportId: 0,
+    retentionGraph: '',
+    viewerRetentionAnalysis: '',
+    algorithmOptimization: '',
+}
+
 export default function ReportPreviewSection() {
+    const router = useRouter()
     const [videoLink, setVideoLink] = useState('')
     const [activeTab, setActiveTab] = useState<ReportTab>('overview')
-    const reportRef = useRef<HTMLDivElement>(null)
 
     const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault()
-        reportRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+
+        const url = videoLink.trim()
+        if (!url) return
+
+        router.push(`/landing/report?url=${encodeURIComponent(url)}`)
     }
 
     return (
@@ -57,6 +70,7 @@ export default function ReportPreviewSection() {
                     <span className="sr-only">유튜브 영상 링크</span>
                     <input
                         type="url"
+                        required
                         value={videoLink}
                         onChange={(event) => setVideoLink(event.target.value)}
                         placeholder="분석할 영상 링크를 입력해주세요"
@@ -65,14 +79,15 @@ export default function ReportPreviewSection() {
                 </label>
                 <button
                     type="submit"
+                    disabled={!videoLink.trim()}
                     aria-label="영상 리포트 보기"
-                    className="flex size-12 shrink-0 items-center justify-center rounded-[20px] bg-bg-3 text-icon-secondary desktop:size-[51px]"
+                    className="flex size-12 shrink-0 items-center justify-center rounded-[20px] bg-bg-3 text-icon-secondary disabled:cursor-not-allowed disabled:opacity-50 desktop:size-[51px]"
                 >
                     <ArrowRightIcon aria-hidden className="size-6" />
                 </button>
             </form>
 
-            <div ref={reportRef} className="relative flex flex-col gap-4 border-t-[1.5px] border-border-subtitle pt-[15px]">
+            <div className="relative flex flex-col gap-4 border-t-[1.5px] border-border-subtitle pt-[15px]">
                 <span className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2 bg-bg-0 px-1 font-body-14r text-text-secondary">
                     리포트 예시
                 </span>
@@ -141,12 +156,13 @@ export default function ReportPreviewSection() {
                         </div>
                     </div>
                 ) : (
-                    <div className="flex min-h-[445px] flex-col gap-2 desktop:min-h-[432px]">
-                        <h4 className="text-[16px] font-semibold leading-[1.4] text-text-primary">심층 반응 분석</h4>
-                        <div className="flex flex-col gap-4 rounded-[20px] bg-bg-1 p-5 font-body-14r text-text-secondary">
-                            <p>댓글과 시청 지표를 기반으로 영상의 핵심 반응을 분석합니다.</p>
-                            <p>가장 높은 호감 키워드: 힐링, 요리, 음악</p>
-                        </div>
+                    <div className="h-[445px] overflow-hidden desktop:h-[432px]">
+                        <AnalysisTab
+                            analysis={previewAnalysis}
+                            isPending={false}
+                            isError={false}
+                            lockViewerRetentionDetails
+                        />
                     </div>
                 )}
 

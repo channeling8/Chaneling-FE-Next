@@ -56,6 +56,41 @@ export interface ReportAnalysis {
     algorithmOptimization: string
 }
 
+export interface ReportRepresentativeComment {
+    category: string
+    content: string
+    author: string
+    authorProfileImageUrl: string | null
+    publishedAt: string
+    likeCount: number
+}
+
+export interface ReportOverview {
+    reportId: number | null
+    view: number
+    viewChannelAvg: number
+    likeCount: number
+    likeChannelAvg: number
+    comment: number
+    commentChannelAvg: number
+    concept: number
+    seo: number
+    revisit: number
+    summary: string
+    totalCommentCount: number
+    neutralComment: number
+    adviceComment: number
+    positiveComment: number
+    negativeComment: number
+    positiveCommentPercent: number
+    negativeCommentPercent: number
+    neutralCommentPercent: number
+    adviceCommentPercent: number
+    commentSummary: string
+    comments: ReportRepresentativeComment[]
+    overviewSummary: string
+}
+
 interface ReportAnalysisResponse {
     reportId: number
     retentionGraph: unknown
@@ -105,6 +140,7 @@ export async function getReportAnalysis(reportId: number): Promise<ReportAnalysi
 }
 
 function normalizeAnalysisField(value: unknown) {
+    if (value == null) return ''
     if (typeof value === 'string') return value
 
     try {
