@@ -6,7 +6,7 @@ import XIcon from '@/assets/icons/X.svg'
 import type { BillingCycle, PlanName } from '../types'
 
 type PaidPlanName = Exclude<PlanName, 'Free'>
-type PaymentField = 'cardNo' | 'expMonth' | 'expYear' | 'idNo' | 'cardPw' | 'agreement'
+type PaymentField = 'cardNo' | 'expMonth' | 'expYear' | 'idNo' | 'cardPw' | 'agreement' | 'refundAgreement'
 type PaymentErrors = Partial<Record<PaymentField, string>>
 
 interface PricingCardPaymentModalProps {
@@ -132,6 +132,9 @@ export default function PricingCardPaymentModal({
         if (idNo.length !== 6 && idNo.length !== 10) nextErrors.idNo = '6자리 또는 10자리로 입력해주세요.'
         if (!/^\d{2}$/.test(cardPw)) nextErrors.cardPw = '앞 2자리를 입력해주세요.'
         if (formData.get('agreement') !== 'on') nextErrors.agreement = '정기 결제에 동의해주세요.'
+        if (formData.get('refundAgreement') !== 'on') {
+            nextErrors.refundAgreement = '환불 제한 사항을 확인해주세요.'
+        }
 
         setErrors(nextErrors)
         if (Object.keys(nextErrors).length > 0) return
@@ -209,7 +212,7 @@ export default function PricingCardPaymentModal({
                             </div>
                         )}
                     </dl>
-                    <p className="text-right font-caption-12r text-text-tertiary">부가세 별도</p>
+                    <p className="text-right font-caption-12r text-text-tertiary">부가세 포함</p>
                     {amountError && (
                         <div className="flex items-center justify-between gap-3 rounded-lg bg-bg-1 px-3 py-2">
                             <p className="font-caption-12r text-red-error">결제 금액을 불러오지 못했습니다.</p>
@@ -322,6 +325,21 @@ export default function PricingCardPaymentModal({
                     <span>
                         선택한 주기에 따른 정기 결제와 카드 정보 제공에 동의합니다.
                         {errors.agreement && <span className="mt-1 block text-red-error">{errors.agreement}</span>}
+                    </span>
+                </label>
+
+                <label className="flex items-start gap-2 font-caption-12r text-text-secondary">
+                    <input
+                        name="refundAgreement"
+                        type="checkbox"
+                        disabled={isSubmitting}
+                        className="mt-0.5 h-4 w-4 accent-primary-60"
+                    />
+                    <span>
+                        결제 후 유료 제공 사용량을 사용하시는 경우 환불이 불가능합니다.
+                        {errors.refundAgreement && (
+                            <span className="mt-1 block text-red-error">{errors.refundAgreement}</span>
+                        )}
                     </span>
                 </label>
 

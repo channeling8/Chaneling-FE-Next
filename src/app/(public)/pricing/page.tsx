@@ -181,7 +181,7 @@ export default function PricingPage() {
                     </div>
                     <EnterpriseCard />
                     <p className="mt-2 font-caption-12r text-text-tertiary desktop:font-caption-14r">
-                        플랜 변경 가능 · 첫 30일 환불 보장 · 부가세 별도
+                        플랜 변경 가능 · 미사용 시 7일 이내 전액 환불 · 부가세 포함
                     </p>
                 </div>
             </section>
