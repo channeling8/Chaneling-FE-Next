@@ -160,7 +160,7 @@ export default function PricingPage() {
 
             <section className="flex w-full flex-1 flex-col items-center gap-8 px-4 pb-10 pt-4 tablet:px-4 desktop:px-16">
                 <div className="flex w-full flex-col items-center gap-4">
-                    <h2 className="font-title-20sb text-text-primary">플랜 업그레이드</h2>
+                    <h1 className="font-title-20sb text-text-primary">플랜 업그레이드</h1>
                     <BillingTabs selected={billingCycle} onSelect={setBillingCycle} />
                 </div>
 

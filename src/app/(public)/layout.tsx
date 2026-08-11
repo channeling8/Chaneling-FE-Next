@@ -5,7 +5,7 @@ import { Footer } from '@/components/Footer'
 
 export default function PublicLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname()
-    const hasFooter = pathname === '/' || pathname === '/landing' || pathname === '/pricing'
+    const hasFooter = pathname === '/' || pathname === '/pricing'
 
     return (
         <div className="flex min-h-screen flex-col bg-bg-0">

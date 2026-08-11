@@ -8,7 +8,7 @@ export default function PrivacyPage() {
     const content = fs.readFileSync(filePath, 'utf-8');
 
     return (
-        <div className="h-full overflow-y-auto bg-bg-0 px-6 py-10 [ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        <main className="h-full overflow-y-auto bg-bg-0 px-6 py-10 [ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             <div className="mx-auto max-w-[800px]">
                 <ReactMarkdown
                     remarkPlugins={[remarkGfm]}
@@ -33,6 +33,6 @@ export default function PrivacyPage() {
                     {content}
                 </ReactMarkdown>
             </div>
-        </div>
+        </main>
     );
 }

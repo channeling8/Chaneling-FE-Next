@@ -1,17 +1,46 @@
 import type { Metadata } from 'next'
 import './globals.css'
+import { siteConfig } from '@/config/site'
 import { Providers } from '@/lib/providers'
 
 export const metadata: Metadata = {
-    title: '채널링 - 유튜브 분석 서비스',
-    description: '유튜브 영상을 AI로 분석하고 인사이트를 얻으세요.',
+    metadataBase: siteConfig.url,
+    applicationName: siteConfig.name,
+    title: {
+        default: siteConfig.title,
+        template: siteConfig.titleTemplate,
+    },
+    description: siteConfig.description,
     icons: {
         icon: '/favicon.svg',
     },
     openGraph: {
-        title: '채널링',
-        description: '유튜브 영상을 AI로 분석하고 인사이트를 얻으세요.',
+        title: siteConfig.title,
+        description: siteConfig.description,
+        siteName: siteConfig.name,
+        locale: siteConfig.locale,
         type: 'website',
+    },
+    twitter: {
+        card: 'summary_large_image',
+        title: siteConfig.title,
+        description: siteConfig.description,
+    },
+    robots: {
+        index: true,
+        follow: true,
+        googleBot: {
+            index: true,
+            follow: true,
+            'max-image-preview': 'large',
+            'max-snippet': -1,
+            'max-video-preview': -1,
+        },
+    },
+    formatDetection: {
+        address: false,
+        email: false,
+        telephone: false,
     },
 }
 

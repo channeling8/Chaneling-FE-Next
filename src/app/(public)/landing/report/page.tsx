@@ -14,7 +14,7 @@ import DummyReportContent from './_components/DummyReportContent'
 function BackToLanding() {
     return (
         <Link
-            href="/landing"
+            href="/"
             className="flex h-6 w-8 items-center justify-center"
             aria-label="랜딩 페이지로 돌아가기"
         >
@@ -55,7 +55,7 @@ function DummyReportError({ message, onRetry }: { message: string; onRetry?: () 
                     <p className="font-body-14r text-text-secondary">{message}</p>
                     <div className="mt-2 flex w-full gap-2">
                         <Link
-                            href="/landing"
+                            href="/"
                             className="flex h-10 flex-1 items-center justify-center rounded-xl bg-bg-2 px-4 font-body-14m text-text-primary"
                         >
                             링크 다시 입력

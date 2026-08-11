@@ -9,6 +9,15 @@ type SvgRule = {
 }
 
 const nextConfig: NextConfig = {
+    async redirects() {
+        return [
+            {
+                source: '/landing',
+                destination: '/',
+                permanent: true,
+            },
+        ]
+    },
     turbopack: {
         root: process.cwd(),
         rules: {
