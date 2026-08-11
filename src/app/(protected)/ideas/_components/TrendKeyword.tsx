@@ -6,6 +6,7 @@ import { SkeletonBase } from '@/components/Skeletonbase'
 import Tab from './Tab'
 import KeywordBox from './KeywordBox'
 import Infoicon from '@/assets/icons/infoIcon.svg'
+import TrendTooltip from './TrendTooltip'
 
 function deduplicateKeywords(keywords: TrendKeywordItem[]) {
     const uniqueKeywords = new Map<string, TrendKeywordItem>()
@@ -50,6 +51,7 @@ function KeywordList({
 }
 
 export default function TrendKeyword({ onKeywordSelect }: { onKeywordSelect: (keyword: string) => void }) {
+    const [isOpen, setIsOpen] = useState(false)
     const [activeTab, setActiveTab] = useState<'live' | 'custom'>('live')
     const { data, isPending, isError, refetch } = useQuery({
         queryKey: ['trend-keywords'],
@@ -62,9 +64,12 @@ export default function TrendKeyword({ onKeywordSelect }: { onKeywordSelect: (ke
     return (
         <div className="flex flex-col w-full mt-1 tablet:mt-3 desktop:mt-1">
             <div className="flex flex-col py-1 items-start">
-                <div className="flex gap-1">
+                <div className="flex gap-1 items-center relative">
                     <h1 className="text-text-primary font-title-18sb">트렌드 키워드</h1>
-                    <Infoicon />
+                    <button className="size-5 [&_svg]:w-full [&_svg]:h-full" onClick={() => setIsOpen((prev) => !prev)}>
+                        <Infoicon />
+                    </button>
+                    {isOpen && <TrendTooltip />}
                 </div>
                 <div className="text-text-secondary font-body-14r">
                     키워드를 클릭해 AI 콘텐츠 아이디어를 생성해보세요

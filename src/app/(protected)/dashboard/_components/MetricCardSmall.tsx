@@ -1,21 +1,29 @@
 import StatusBadge from '@/components/StatusBadge'
+import InfoIcon from '@/assets/icons/infoIcon.svg'
+import DashboardTooltip from './DashboardTooltip'
 
 interface MetricCardSmallProps {
     delta: number | null
     label: string
     score: number | null
     status: Parameters<typeof StatusBadge>[0]['status'] | null
+    onClick: () => void
+    isOpen: boolean
 }
 
-export default function MetricCardSmall({ delta, label, score, status }: MetricCardSmallProps) {
+export default function MetricCardSmall({ delta, label, score, status, onClick, isOpen }: MetricCardSmallProps) {
     const formattedDelta = delta === null ? '-' : `${delta > 0 ? '+' : ''} ${delta}`
 
     return (
-        <article className="flex min-h-[110px] min-w-0 flex-col gap-2 overflow-hidden rounded-[20px] bg-bg-1 p-4 tablet:min-h-[133px] desktop:min-h-[145px] desktop:justify-between">
+        <article className="flex relative min-h-27.5 min-w-0 flex-col gap-2 rounded-[20px] bg-bg-1 p-4 tablet:min-h-33.25 desktop:min-h-36.25 desktop:justify-between">
             <div className="flex w-full min-w-0 items-center justify-between gap-2">
-                <h2 className="min-w-0 truncate font-body-14m text-text-secondary">
-                    {label}
-                </h2>
+                <div className="flex gap-0.5 items-center">
+                    <h2 className="min-w-0 truncate font-body-14m text-text-secondary">{label}</h2>
+
+                    <button className="size-4 [&_svg]:w-full [&_svg]:h-full " onClick={onClick}>
+                        <InfoIcon />
+                    </button>
+                </div>
                 {status && <StatusBadge status={status} />}
             </div>
 
@@ -29,6 +37,7 @@ export default function MetricCardSmall({ delta, label, score, status }: MetricC
                     지난 달 보다
                 </p>
             </div>
+            {isOpen && <DashboardTooltip label={label} />}
         </article>
     )
 }

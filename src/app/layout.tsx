@@ -5,6 +5,9 @@ import { Providers } from '@/lib/providers'
 export const metadata: Metadata = {
     title: '채널링 - 유튜브 분석 서비스',
     description: '유튜브 영상을 AI로 분석하고 인사이트를 얻으세요.',
+    icons: {
+        icon: '/favicon.svg',
+    },
     openGraph: {
         title: '채널링',
         description: '유튜브 영상을 AI로 분석하고 인사이트를 얻으세요.',

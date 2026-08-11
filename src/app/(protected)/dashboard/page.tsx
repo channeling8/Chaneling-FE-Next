@@ -22,6 +22,7 @@ import MetricCardSmall from './_components/MetricCardSmall'
 import MetricCardWithImage from './_components/MetricCardwithImage'
 import UploadCycleChart from './_components/UploadCycleChart'
 import { Footer } from '@/components/Footer'
+import { useState } from 'react'
 
 type MetricStatus = Parameters<typeof StatusBadge>[0]['status']
 
@@ -73,8 +74,7 @@ function formatBaseDate(baseDate: string) {
             minute: '2-digit',
             hourCycle: 'h23',
         }).formatToParts(date)
-        const getPart = (type: Intl.DateTimeFormatPartTypes) =>
-            parts.find((part) => part.type === type)?.value
+        const getPart = (type: Intl.DateTimeFormatPartTypes) => parts.find((part) => part.type === type)?.value
 
         return `${getPart('year')}년 ${getPart('month')}월 ${getPart('day')}일 (${getPart('hour')}:${getPart('minute')}) 기준`
     } catch {
@@ -90,6 +90,8 @@ function formatSubscribers(subscriberCount: number) {
 }
 
 export default function DashboardPage() {
+    const [activeTooltipId, setActiveTooltipId] = useState<string | null>(null)
+
     const { data: metadata, isPending: isMetadataPending } = useQuery({
         queryKey: ['dashboard', 'metadata'],
         queryFn: getDashboardMetadata,
@@ -128,9 +130,7 @@ export default function DashboardPage() {
                         {isMetadataPending ? (
                             <DashboardDateSkeleton />
                         ) : metadata ? (
-                            <p className="font-body-14r text-text-tertiary">
-                                {formatBaseDate(metadata.baseDate)}
-                            </p>
+                            <p className="font-body-14r text-text-tertiary">{formatBaseDate(metadata.baseDate)}</p>
                         ) : null}
 
                         <div className="grid w-full grid-cols-1 gap-2 tablet:grid-cols-[274px_minmax(0,1fr)] desktop:grid-cols-[298px_minmax(0,1fr)]">
@@ -149,7 +149,16 @@ export default function DashboardPage() {
                                     />
                                     <div className="grid min-w-0 grid-cols-2 gap-2 tablet:grid-cols-3">
                                         {renderedMetrics.map((metric) => (
-                                            <MetricCardSmall key={metric.label} {...metric} />
+                                            <MetricCardSmall
+                                                key={metric.label}
+                                                {...metric}
+                                                isOpen={activeTooltipId === metric.label}
+                                                onClick={() =>
+                                                    setActiveTooltipId((prev) =>
+                                                        prev === metric.label ? null : metric.label
+                                                    )
+                                                }
+                                            />
                                         ))}
                                     </div>
                                 </>
@@ -166,9 +175,7 @@ export default function DashboardPage() {
                             <div className="flex flex-col gap-2">
                                 <h2 className="font-title-18sb text-text-primary">채널링의 제안</h2>
                                 {suggestions.summaryMessage && (
-                                    <p className="font-body-14r text-text-secondary">
-                                        {suggestions.summaryMessage}
-                                    </p>
+                                    <p className="font-body-14r text-text-secondary">{suggestions.summaryMessage}</p>
                                 )}
                             </div>
                             <div className="flex flex-col gap-2">
@@ -186,7 +193,6 @@ export default function DashboardPage() {
                             </div>
                         </section>
                     ) : null}
-
                 </PageContent>
                 <Footer />
             </Scroll>
